@@ -2,11 +2,17 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
-export default async function Home() {
+export default async function AuthLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
 
-  if (session?.user.role === "admin") redirect("/admin/dashboard");
-  return <div>Home</div>;
+  if (session?.user) {
+    redirect("/");
+  }
+  return <section>{children}</section>;
 }

@@ -4,7 +4,7 @@ import { db } from "./db/index";
 import { admin } from "better-auth/plugins";
 import { nextCookies } from "better-auth/next-js";
 import { env } from "../../env";
-import { hash as bcryptHash } from "bcryptjs";
+import { hash as bcryptHash, compare as bcryptCompare } from "bcryptjs";
 
 const adminRole = "admin";
 const userRole = "user";
@@ -24,6 +24,10 @@ export const auth = betterAuth({
       hash: async (password: string) => {
         const hashedPassword = await bcryptHash(password, 10);
         return hashedPassword;
+      },
+      verify: async ({ hash, password }) => {
+        const isValid = await bcryptCompare(password, hash);
+        return isValid;
       },
     },
   },
