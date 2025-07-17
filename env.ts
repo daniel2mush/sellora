@@ -8,6 +8,11 @@ const envSchema = z.object({
   GOOGLE_CLIENT_ID: z.string(),
   GOOGLE_CLIENT_SECRET: z.string(),
   BETTER_AUTH_SECRET: z.string().regex(/^[0-9a-f]{64}$/),
+  CLOUDINARY_CLOUD_NAME: z.string(),
+  CLOUDINARY_API_KEY: z.string(),
+  CLOUDINARY_API_SECRET: z.string(),
+  NEXT_PUBLIC_API_URL: z.url(),
+  NEXT_PUBLIC_CLOUD_NAME: z.string(),
 });
 
 const _env = envSchema.safeParse(process.env);

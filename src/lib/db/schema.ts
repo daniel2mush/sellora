@@ -91,8 +91,8 @@ export const verification = pgTable("verification", {
 export const products = pgTable("products", {
   id: uuid("id").primaryKey().defaultRandom(),
   userId: text("user_id")
-    .references(() => user.id)
-    .notNull(),
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
   title: text("title").notNull(),
   description: text("description").notNull(),
   price: integer("price").notNull(), // in cents
@@ -122,10 +122,10 @@ export const assets = pgTable("assets", {
 export const orders = pgTable("orders", {
   id: uuid("id").primaryKey().defaultRandom(),
   userId: text("user_id")
-    .references(() => user.id)
-    .notNull(),
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
   totalAmount: integer("total_amount").notNull(),
-  status: statusEnum("status").default("pending"), // or 'pending'
+  status: statusEnum().default("pending"), // or 'pending'
   paypalOrderId: text("paypal_order_id").notNull(),
   createdAt: timestamp("created_at").$defaultFn(() => new Date()),
 });
@@ -148,9 +148,9 @@ export const orderItems = pgTable("order_items", {
 
 export const downloads = pgTable("downloads", {
   id: uuid("id").primaryKey().defaultRandom(),
-  userId: uuid("user_id")
-    .references(() => user.id)
-    .notNull(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
   assetId: uuid("asset_id")
     .references(() => assets.id)
     .notNull(),
