@@ -1,5 +1,8 @@
 import { getSignature } from "@/app/actions/cloudinary";
-import { addNewProductAction } from "@/app/actions/productAction";
+import {
+  addNewProductAction,
+  EditProductAction,
+} from "@/app/actions/productAction";
 import { Button } from "@/components/ui/button";
 import { DialogClose, DialogFooter } from "@/components/ui/dialog";
 import {
@@ -16,14 +19,28 @@ import axios from "axios";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { log } from "util";
 import z from "zod";
 
-export default function AddProductForm({ setOpen }: { setOpen: () => void }) {
+type productTypes = {
+  id: string;
+  title: string;
+  description: string;
+  price: string;
+  thumbnailUrl: string;
+};
+
+interface AddProductProps {
+  products?: productTypes;
+  setOpen: () => void;
+}
+
+export default function AddProductForm({ setOpen, products }: AddProductProps) {
   const [thumbnailUploadProgress, setThumbnailUploadProgress] = useState(0);
   const [assetUploadProgress, setAssetUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
+  const [value, setValue] = useState(0.0);
   const closeref = useRef(null);
+
   // File schemas
   const ThumbnailSchema = z
     .instanceof(File)
@@ -59,11 +76,11 @@ export default function AddProductForm({ setOpen }: { setOpen: () => void }) {
       .string()
       .min(10, "Description should be more than 10 characters")
       .max(122, "Description should be less than 122 characters"),
-    price: z.string().refine((val) => /^\d+(\.\d{1,2})?$/.test(val), {
-      message: "Enter a valid price (e.g. 19.99)",
+    price: z.string().refine((val) => /^\d+\.\d{1,2}$/.test(val), {
+      message: "Enter a valid price with cents (e.g. 19.99)",
     }),
-    thumbnail: ThumbnailSchema,
-    asset: AssetSchema,
+    thumbnail: ThumbnailSchema.optional(),
+    asset: AssetSchema.optional(),
   });
 
   type FormTypes = z.infer<typeof FormSchema>;
@@ -71,9 +88,9 @@ export default function AddProductForm({ setOpen }: { setOpen: () => void }) {
   const form = useForm<FormTypes>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      title: "",
-      description: "",
-      price: "",
+      title: products?.title || "",
+      description: products?.description || "",
+      price: products?.price ? (Number(products?.price) / 100).toFixed(2) : "",
     },
   });
 
@@ -81,7 +98,7 @@ export default function AddProductForm({ setOpen }: { setOpen: () => void }) {
     setIsUploading(true);
     const parsed = {
       ...data,
-      price: parseFloat(data.price),
+      price: Math.round(parseFloat(data.price) * 100),
     };
 
     type clodinaryTypes = {
@@ -90,14 +107,11 @@ export default function AddProductForm({ setOpen }: { setOpen: () => void }) {
       bytes: number;
     };
     const thumbnail = (await UploadThumbnailToCloudinary(
-      data.thumbnail
+      data.thumbnail!
     )) as clodinaryTypes;
     const assets = (await UploadAssetToCloudinary(
-      data.asset
+      data.asset!
     )) as clodinaryTypes;
-
-    console.log(thumbnail, "Thumbnail cloudinary");
-    console.log(assets, "Assets cloudinary");
 
     const fileType = assets.public_id.split("/").pop()?.split(".").pop();
 
@@ -105,25 +119,65 @@ export default function AddProductForm({ setOpen }: { setOpen: () => void }) {
       const DataBaseFormData = new FormData();
       DataBaseFormData.append("title", data.title);
       DataBaseFormData.append("description", data.description);
-      DataBaseFormData.append("price", data.price);
+      DataBaseFormData.append("price", parsed.price.toString());
       DataBaseFormData.append("thumbnailUrl", thumbnail.secure_url);
       DataBaseFormData.append("assetUrl", assets.secure_url);
       DataBaseFormData.append("publicId", assets.public_id);
       DataBaseFormData.append("assetType", fileType as string);
       DataBaseFormData.append("assetSize", assets.bytes.toString());
 
-      const { message, status } = await addNewProductAction(DataBaseFormData);
-      if (!status) {
-        toast.error(message);
+      const { message, success } = await addNewProductAction(DataBaseFormData);
+      if (success) {
+        toast.success(message);
+        setOpen();
         return;
       }
-      toast.success(message);
-      setOpen();
+      toast.error(message);
     } catch (error) {
       console.log(error);
     } finally {
       setIsUploading(false);
       form.reset();
+    }
+  }
+
+  async function UpdateProducts(data: FormTypes) {
+    setIsUploading(true);
+    const parsed = {
+      ...data,
+      price: Math.round(parseFloat(data.price) * 100),
+    };
+    type clodinaryTypes = {
+      public_id: string;
+      secure_url: string;
+      bytes: number;
+    };
+    const thumbnail = (await UploadThumbnailToCloudinary(
+      data.thumbnail!
+    )) as clodinaryTypes;
+
+    console.log(thumbnail.secure_url, "Thumbnail, front end");
+
+    try {
+      const { message, success } = await EditProductAction(
+        products?.id as string,
+        {
+          title: data.title,
+          description: data.description,
+          price: parsed.price,
+          thumbnailUrl: thumbnail.secure_url,
+        }
+      );
+
+      if (success) {
+        toast.success(message);
+        return;
+      }
+      toast.error(message);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setOpen(), form.reset();
     }
   }
 
@@ -146,7 +200,7 @@ export default function AddProductForm({ setOpen }: { setOpen: () => void }) {
         formData,
         {
           headers: {
-            "Content-Type": "multiparts/form-data",
+            "Content-Type": "multipart/form-data",
           },
           onUploadProgress: (e) => {
             const progress = Math.round((e.loaded * 100) / (e.total || 1));
@@ -181,7 +235,7 @@ export default function AddProductForm({ setOpen }: { setOpen: () => void }) {
         formData,
         {
           headers: {
-            "Content-Type": "multiparts/form-data",
+            "Content-Type": "multipart/form-data",
           },
           onUploadProgress: (e) => {
             const progress = Math.round((e.loaded * 100) / (e.total || 1));
@@ -199,7 +253,9 @@ export default function AddProductForm({ setOpen }: { setOpen: () => void }) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(AddProduct)} className="space-y-6">
+      <form
+        onSubmit={form.handleSubmit(products ? UpdateProducts : AddProduct)}
+        className="space-y-6">
         {/* Title */}
         <FormField
           name="title"
@@ -237,9 +293,8 @@ export default function AddProductForm({ setOpen }: { setOpen: () => void }) {
               <FormLabel>Price</FormLabel>
               <FormControl>
                 <Input
-                  type="number"
-                  step="0.01"
-                  min="0"
+                  type="text"
+                  step={".01"}
                   placeholder="Enter price"
                   {...field}
                 />
@@ -270,26 +325,30 @@ export default function AddProductForm({ setOpen }: { setOpen: () => void }) {
           )}
         />
         {/* Asset */}
-        <FormField
-          name="asset"
-          control={form.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Asset</FormLabel>
-              <FormControl>
-                <Input
-                  type="file"
-                  accept=".pdf,.zip"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) field.onChange(file);
-                  }}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+
+        {!products && (
+          <FormField
+            name="asset"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Asset</FormLabel>
+                <FormControl>
+                  <Input
+                    type="file"
+                    accept=".pdf,.zip"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) field.onChange(file);
+                    }}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
+
         {assetUploadProgress > 0 && (
           <div>
             {/* Asset upload */}
@@ -313,9 +372,11 @@ export default function AddProductForm({ setOpen }: { setOpen: () => void }) {
               Cancel
             </Button>
           </DialogClose>
-          <Button className=" w-25" type="submit" disabled={isUploading}>
+          <Button className=" " type="submit" disabled={isUploading}>
             {isUploading ? (
               <div className=" h-7 w-7 rounded-full border-2 border-t-transparent animate-spin " />
+            ) : products ? (
+              "Update Product"
             ) : (
               "Add Product"
             )}

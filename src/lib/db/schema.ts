@@ -125,7 +125,7 @@ export const orders = pgTable("orders", {
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
   totalAmount: integer("total_amount").notNull(),
-  status: statusEnum().default("pending"), // or 'pending'
+  status: statusEnum("status").default("pending"), // or 'pending'
   paypalOrderId: text("paypal_order_id").notNull(),
   createdAt: timestamp("created_at").$defaultFn(() => new Date()),
 });

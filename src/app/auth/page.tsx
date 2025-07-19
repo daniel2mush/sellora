@@ -130,12 +130,12 @@ export function LoginForm() {
         callbackURL: "/",
       });
       if (data.error) {
-        console.log(data.error?.message);
-        toast.error(data.error.message);
+        console.log(data.error?.message, "Error ");
+        toast.error(data.error?.message);
         return;
       }
 
-      toast.success("Login successful");
+      toast.success("Login `successful`");
     } catch (error) {
       console.log(error);
     } finally {

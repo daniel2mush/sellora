@@ -28,7 +28,7 @@ export default async function AdminLayout({
             <AdminNavigation />
           </div>
 
-          {children}
+          <main className=" px-10 py-10"> {children}</main>
         </div>
       </SidebarProvider>
       <Toaster richColors />
