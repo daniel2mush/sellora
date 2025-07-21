@@ -1,3 +1,1 @@
-export const getImageUrl = (imagePath: string) => {
-  return new URL(`../../../public/${imagePath}`, import.meta.url).href;
-};
+export const getImageUrl = (imagePath: string) => `/${imagePath}`;

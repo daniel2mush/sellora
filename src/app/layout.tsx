@@ -5,9 +5,6 @@ import { Toaster } from "sonner";
 import Navigation from "@/components/appCompnent/navigation";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
-import AdminNavigation from "@/components/appCompnent/adminNavigation";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import AppSideBar from "@/components/appCompnent/app-sidebar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

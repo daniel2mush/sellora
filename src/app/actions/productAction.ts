@@ -86,6 +86,7 @@ export async function addNewProductAction(form: FormData) {
 
     revalidatePath("/admin/dashboard");
     revalidatePath("/admin/dashboard/products");
+    revalidatePath("/products");
 
     return {
       success: true,
@@ -194,6 +195,7 @@ export async function PublishProductAction(productId: string) {
 
     revalidatePath("/admin/dashboard/products");
     revalidatePath("/admin/dashboard");
+    revalidatePath("/products");
 
     return {
       success: true,
@@ -261,6 +263,7 @@ export async function EditProductAction(productId: string, { ...args }) {
 
     revalidatePath("/admin/dashboard/products");
     revalidatePath("/admin/dashboard");
+    revalidatePath("/products");
 
     return {
       success: true,
@@ -323,6 +326,7 @@ export async function DeleteProductActions({
 
     revalidatePath("/admin/dashboard/products");
     revalidatePath("/admin/dashboard");
+    revalidatePath("/products");
 
     return {
       success: true,

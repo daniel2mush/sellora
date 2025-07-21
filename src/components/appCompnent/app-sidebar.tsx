@@ -35,7 +35,7 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import { Button } from "../ui/button";
-import AddProductForm from "./addProducts/add-products";
+import AddProductForm from "./adminComponents/add-products";
 
 export default function AppSideBar() {
   const { state } = useSidebar();

@@ -28,6 +28,7 @@ import {
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
 import { SetUserToAdminActions } from "@/app/actions/userActions";
+import Image from "next/image";
 
 export default function NavigationItems() {
   const { data: session, isPending } = useSession();
@@ -79,28 +80,16 @@ export default function NavigationItems() {
   return (
     <div className=" flex items-center justify-between h-20 border-b-1 w-full px-20">
       {/* logo */}
-      <div className="  md:text-2xl font-black text-primary">SELLORA</div>
+      <div className=" relative w-20 md:w-32  h-16">
+        <Image src={"/Logo.png"} alt="logo" fill className=" object-contain" />
+      </div>
       {/* Menu */}
-      <div className=" flex justify-center items-center gap-4 ">
-        {navMenu.map((n) => {
-          const isPath = pathname === n.path;
-          return (
-            <div
-              key={n.name}
-              className={
-                isPath
-                  ? "font-bold t border-b-2  border-primary  "
-                  : " text-gray-500"
-              }>
-              <Link href={n.path}> {n.name}</Link>
-            </div>
-          );
-        })}
-        {session?.user &&
-          navSession.map((n) => {
+      <nav className=" ">
+        <ul className="flex justify-center items-center gap-4 ">
+          {navMenu.map((n) => {
             const isPath = pathname === n.path;
             return (
-              <div
+              <li
                 key={n.name}
                 className={
                   isPath
@@ -108,10 +97,27 @@ export default function NavigationItems() {
                     : " text-gray-500"
                 }>
                 <Link href={n.path}> {n.name}</Link>
-              </div>
+              </li>
             );
           })}
-      </div>
+
+          {session?.user &&
+            navSession.map((n) => {
+              const isPath = pathname === n.path;
+              return (
+                <li
+                  key={n.name}
+                  className={
+                    isPath
+                      ? "font-bold t border-b-2  border-primary  "
+                      : " text-gray-500"
+                  }>
+                  <Link href={n.path}> {n.name}</Link>
+                </li>
+              );
+            })}
+        </ul>
+      </nav>
       {/* profile */}
       {isPending ? (
         <div />

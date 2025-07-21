@@ -9,13 +9,14 @@ cloudinary.config({
 });
 
 export async function POST(request: Request) {
-  const { timestamp } = await request.json();
+  const { timestamp, public_id } = await request.json();
   const folder = "sellora";
   try {
     const signature = cloudinary.utils.api_sign_request(
       {
         timestamp,
         folder,
+        public_id,
       },
       env.CLOUDINARY_API_SECRET
     );

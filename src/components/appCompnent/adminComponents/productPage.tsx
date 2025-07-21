@@ -39,7 +39,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import AddProductForm from "../addProducts/add-products";
+import AddProductForm from "./add-products";
 import { Select, SelectItem, SelectTrigger } from "@/components/ui/select";
 import { SelectContent } from "@radix-ui/react-select";
 import { toast } from "sonner";

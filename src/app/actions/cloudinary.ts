@@ -3,7 +3,7 @@
 import axios from "axios";
 import { env } from "../../../env";
 
-export async function getSignature(timestamp: number) {
+export async function getSignature(timestamp: number, public_id: string) {
   if (!timestamp)
     return {
       status: false,
@@ -13,7 +13,7 @@ export async function getSignature(timestamp: number) {
   try {
     const res = await axios.post(
       `${env.NEXT_PUBLIC_API_URL}/api/cloudinary/signature`,
-      { timestamp },
+      { timestamp, public_id },
       {
         headers: {
           "Content-Type": "application/json",

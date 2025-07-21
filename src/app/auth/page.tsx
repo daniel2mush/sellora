@@ -35,6 +35,7 @@ import {
 import { fa } from "zod/v4/locales";
 import { signIn, signUp } from "@/lib/authClient";
 import { toast } from "sonner";
+import { CssVariable } from "next/dist/compiled/@next/font";
 
 export default function AuthPage() {
   const [value, setValue] = useState("login");
@@ -45,18 +46,32 @@ export default function AuthPage() {
     });
   }
 
+  const backgroundStyle: React.CSSProperties = {
+    backgroundImage: `url(${getImageUrl("Background3.jpg")})`,
+    backgroundRepeat: "no-repeat",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+  };
+
   return (
-    <div className=" flex justify-center items-center bg-secondary min-h-screen">
-      <Card className=" w-full max-w-lg">
-        <CardHeader>
-          <CardTitle>
+    <div className=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 min-h-screen  ">
+      <div
+        style={backgroundStyle}
+        className=" min-h-screen h-full w-full border lg:col-span-2 ">
+        {" "}
+      </div>
+      {/* Auth section */}
+      <div className=" w-full  bg-white px-6 min-h-screen py-20">
+        <div>
+          <div>
             <h1 className=" text-xl md:text-2xl lg:text-3xl font-bold text-center">
               Welcome Back !
             </h1>
-          </CardTitle>
-          <CardDescription>
+          </div>
+          <div>
             <p className=" text-center ">Login to continue</p>
-          </CardDescription>
+          </div>
+          {/* Google auth */}
           <div className=" w-full mt-5">
             <Button
               type="button"
@@ -73,15 +88,18 @@ export default function AuthPage() {
               Login With Google
             </Button>
           </div>
-        </CardHeader>
-        <CardContent>
-          <div className=" flex justify-center items-center gap-4 mb-5">
+        </div>
+        <div>
+          {/* Or sign in with email section */}
+          <div className=" flex justify-center items-center gap-4 mb-5 mt-5">
             <div className=" h-0.5 bg-gray-300 w-[100%]" />
             <div className=" flex-11/12">
-              <p className=" text-sm">Or sign in with Email</p>
+              <p className=" text-[12px]">Or sign in with Email</p>
             </div>
             <div className=" h-0.5 bg-gray-300 w-[100%]" />
           </div>
+          {/* Email and password */}
+
           <Tabs value={value} onValueChange={setValue} className=" w-full">
             <TabsList className=" w-full">
               <TabsTrigger value="login">Login</TabsTrigger>
@@ -94,8 +112,8 @@ export default function AuthPage() {
               <RegisterForm switchValue={() => setValue("login")} />
             </TabsContent>
           </Tabs>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }
