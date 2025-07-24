@@ -17,9 +17,6 @@ export default async function ProductDetails({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  // const session = await auth.api.getSession({
-  //   headers : await headers()
-  // })
   const id = (await params).id;
   const product = (await GetSingleProductActions(id)) as productWithUser;
 
@@ -29,6 +26,11 @@ export default async function ProductDetails({
   });
 
   const isLoggedIn = session?.user;
+  const isFree = product.products.price <= 0;
+
+  const isAuthor = product.products.userId === session?.user.id;
+
+  // const isAlreadyBought
 
   return (
     <div className="">
@@ -82,20 +84,67 @@ export default async function ProductDetails({
             </div>
             {/* Download button */}
 
-            <Button className=" w-full py-10 cursor-pointer ">
+            <div>
               {isLoggedIn ? (
-                <div>
-                  <h1 className=" font-bold text-2xl">Free download</h1>
-                  <p className=" text-sm text-muted-foreground">
-                    Attribution required
-                  </p>
-                </div>
+                isAuthor ? (
+                  <div className=" text-center">
+                    <h1 className="font-bold text-xl">You own this asset</h1>
+                    <p>You cannot buy your own asset</p>
+                  </div>
+                ) : isFree ? (
+                  <Button className=" w-full h-16">
+                    <div className=" w-full py-10 cursor-pointer ">
+                      <h1 className=" font-bold text-2xl">Free download</h1>
+                      <p className=" text-sm text-muted-foreground">
+                        Attribution required
+                      </p>
+                    </div>
+                  </Button>
+                ) : (
+                  <div className=" space-y-5">
+                    {/* Product price */}
+                    <div className=" text-center">
+                      <h1 className=" font-bold text-5xl">
+                        ${(product.products.price / 100).toFixed(2)}
+                      </h1>
+                    </div>
+                    {/* Pay with paypal */}
+                    <Button variant={"outline"} className=" h-10 w-full p-4">
+                      <div className=" relative h-6 w-full ">
+                        <Image
+                          src={"/payment/paypal.png"}
+                          alt="paypal"
+                          fill
+                          className="
+                         object-contain
+                        "
+                        />
+                      </div>
+                    </Button>
+                    {/* Pay with orange money */}
+
+                    <Button
+                      variant={"outline"}
+                      className=" h-10 w-full p-4 overflow-hidden">
+                      <div className=" relative h-20 w-full overflow-hidden ">
+                        <Image
+                          src={"/payment/orangeMoney.png"}
+                          alt="paypal"
+                          fill
+                          className="
+                         object-contain
+                        "
+                        />
+                      </div>
+                    </Button>
+                  </div>
+                )
               ) : (
                 <Link href={"/auth"} className=" font-bold text-2xl">
                   Log in to download
                 </Link>
               )}
-            </Button>
+            </div>
 
             {/* Share and add to collection button */}
             {isLoggedIn && (
