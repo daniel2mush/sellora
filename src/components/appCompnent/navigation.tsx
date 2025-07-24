@@ -80,9 +80,9 @@ export default function NavigationItems() {
   return (
     <div className=" flex items-center justify-between h-20 border-b-1 w-full px-20">
       {/* logo */}
-      <div className=" relative w-20 md:w-32  h-16">
+      <Link href={"/"} className=" relative w-20 md:w-32  h-16">
         <Image src={"/Logo.png"} alt="logo" fill className=" object-contain" />
-      </div>
+      </Link>
       {/* Menu */}
       <nav className=" ">
         <ul className="flex justify-center items-center gap-4 ">

@@ -18,6 +18,7 @@ const ProductSchema = z.object({
   publicId: z.string(),
   assetType: z.string(),
   assetSize: z.number(),
+  category: z.enum(["psd", "photo", "png", "svg", "template", "vector"]),
 });
 
 export async function addNewProductAction(form: FormData) {
@@ -30,6 +31,7 @@ export async function addNewProductAction(form: FormData) {
   const assetType = form.get("assetType");
   const publicId = form.get("publicId");
   const assetSize = form.get("assetSize");
+  const category = form.get("category");
 
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -56,6 +58,7 @@ export async function addNewProductAction(form: FormData) {
       publicId,
       assetType,
       assetSize: Number(assetSize),
+      category,
     });
 
     const [newProduct] = await db
@@ -81,6 +84,7 @@ export async function addNewProductAction(form: FormData) {
         size: data.assetSize,
         publicId: data.publicId,
         createdAt: new Date(),
+        category: data.category,
       })
       .returning();
 

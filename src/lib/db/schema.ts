@@ -7,11 +7,20 @@ import {
   integer,
   uuid,
   pgEnum,
+  index,
 } from "drizzle-orm/pg-core";
 
 /// --- Enum for Order Table ---
 
 const statusEnum = pgEnum("status", ["pending", "rejected", "completed"]);
+const categoryEnum = pgEnum("category", [
+  "psd",
+  "photo",
+  "png",
+  "svg",
+  "template",
+  "vector",
+]);
 
 /// --- User Table ---
 
@@ -104,18 +113,25 @@ export const products = pgTable("products", {
 
 /// --- Assets Table --- ///
 
-export const assets = pgTable("assets", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  productId: uuid("product_id")
-    .references(() => products.id)
-    .notNull(),
-  url: text("url").notNull(),
-  publicId: text("public_id").notNull(), // Cloudinary ID
-  type: text("type"), // pdf, zip, etc.
-  size: integer("size"),
-  createdAt: timestamp("created_at").$defaultFn(() => new Date()),
-  updatedAt: timestamp("updated_at").$defaultFn(() => new Date()),
-});
+export const assets = pgTable(
+  "assets",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    productId: uuid("product_id")
+      .references(() => products.id)
+      .notNull(),
+    url: text("url").notNull(),
+    publicId: text("public_id").notNull(), // Cloudinary ID
+    type: text("type"), // pdf, zip, etc.
+    category: categoryEnum("category").notNull(),
+    size: integer("size"),
+    createdAt: timestamp("created_at").$defaultFn(() => new Date()),
+    updatedAt: timestamp("updated_at").$defaultFn(() => new Date()),
+  },
+  (table) => ({
+    categoryIdx: index("category_idx").on(table.category),
+  })
+);
 
 /// --- Orders Table ---
 

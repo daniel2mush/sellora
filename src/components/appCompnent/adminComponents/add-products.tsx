@@ -35,6 +35,15 @@ interface AddProductProps {
 }
 
 import slugify from "slugify";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function AddProductForm({ setOpen, products }: AddProductProps) {
   const [thumbnailUploadProgress, setThumbnailUploadProgress] = useState(0);
@@ -94,6 +103,7 @@ export default function AddProductForm({ setOpen, products }: AddProductProps) {
     }),
     thumbnail: ThumbnailSchema.optional(),
     asset: AssetSchema.optional(),
+    category: z.enum(["psd", "photo", "png", "svg", "template", "vector"]),
   });
 
   type FormTypes = z.infer<typeof FormSchema>;
@@ -104,6 +114,7 @@ export default function AddProductForm({ setOpen, products }: AddProductProps) {
       title: products?.title || "",
       description: products?.description || "",
       price: products?.price ? (Number(products?.price) / 100).toFixed(2) : "",
+      category: "photo",
     },
   });
 
@@ -143,6 +154,7 @@ export default function AddProductForm({ setOpen, products }: AddProductProps) {
         DataBaseFormData.append("publicId", assets.public_id);
         DataBaseFormData.append("assetType", fileType as string);
         DataBaseFormData.append("assetSize", assets.bytes.toString());
+        DataBaseFormData.append("category", data.category);
 
         const { message, success } = await addNewProductAction(
           DataBaseFormData
@@ -358,6 +370,34 @@ export default function AddProductForm({ setOpen, products }: AddProductProps) {
             </FormItem>
           )}
         />
+
+        {/* Asset category here */}
+        <FormField
+          name="category"
+          control={form.control}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Asset Category</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder=" Select an asset category" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="psd">PSD</SelectItem>
+                  <SelectItem value="photo">Photo</SelectItem>
+                  <SelectItem value="png">Png</SelectItem>
+                  <SelectItem value="svg">Svg</SelectItem>
+                  <SelectItem value="vector">Vector</SelectItem>
+                  <SelectItem value="template">Template</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         {/* Asset */}
 
         {!products && (

@@ -1,0 +1,36 @@
+export interface productTypes {
+  id: string;
+  userId: string;
+  title: string;
+  description: string;
+  price: number;
+  isPublished: boolean | null;
+  thumbnailUrl: string | null;
+  createdAt: Date | null;
+  updatedAt: Date | null;
+}
+
+export interface userTypes {
+  id: string;
+  name: string;
+  email: string;
+  emailVerified: boolean;
+  image: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  role: string | null;
+  banned: boolean | null;
+  banReason: string | null;
+  banExpires: Date | null;
+}
+export interface paginationData {
+  currentPage: number;
+  totalPages: number;
+  total: number;
+  pageSize: number;
+}
+
+export interface productWithUser {
+  products: productTypes;
+  user: userTypes;
+}
