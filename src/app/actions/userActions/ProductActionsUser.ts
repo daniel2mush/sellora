@@ -1,7 +1,10 @@
+import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { assets, products, user } from "@/lib/db/schema";
+import { assets, orderItems, orders, products, user } from "@/lib/db/schema";
 import { and, desc, eq, gt, or, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
 export type searchQueryProps =
   | "psd"
@@ -113,5 +116,30 @@ export async function GetUserUploadsAction(userId: string) {
       product: [],
       count: 0,
     };
+  }
+}
+
+export async function IsAlreadyBougth(productId: string) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session?.user) redirect("/auth");
+  try {
+    const res = await db
+      .select()
+      .from(orderItems)
+      .innerJoin(orders, eq(orders.id, orderItems.orderId))
+      .where(
+        and(
+          eq(orderItems.productId, productId),
+          eq(orders.userId, session.user.id)
+        )
+      )
+      .limit(1);
+
+    return res.length > 0;
+  } catch (error) {
+    return false;
   }
 }

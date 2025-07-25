@@ -13,6 +13,9 @@ const envSchema = z.object({
   CLOUDINARY_API_SECRET: z.string(),
   NEXT_PUBLIC_API_URL: z.url(),
   NEXT_PUBLIC_CLOUD_NAME: z.string(),
+  PAYPAL_CLIENT_ID: z.string(),
+  PAYPAL_CLIENT_SECRET: z.string(),
+  PAYPAL_ENDPOINT: z.string(),
 });
 
 const _env = envSchema.safeParse(process.env);

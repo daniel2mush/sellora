@@ -1,24 +1,36 @@
+import { CreatePaypalOrder } from "@/app/actions/paypal/paypal";
 import {
   GetSingleProductActions,
   GetUserUploadsAction,
+  IsAlreadyBougth,
 } from "@/app/actions/userActions/ProductActionsUser";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { auth } from "@/lib/auth";
 import { productWithUser } from "@/lib/types/productTypes";
 import { AvatarImage } from "@radix-ui/react-avatar";
-import { Shapes, Share, UserPlus } from "lucide-react";
+import { promises } from "dns";
+import { CircleAlert, Download, Shapes, Share, UserPlus } from "lucide-react";
 import { headers } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { toast } from "sonner";
 
 export default async function ProductDetails({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{
+    success: string;
+    error: string;
+    cancelled: string;
+  }>;
 }) {
   const id = (await params).id;
   const product = (await GetSingleProductActions(id)) as productWithUser;
+  const { error, success, cancelled } = await searchParams;
 
   const { count } = await GetUserUploadsAction(product.user.id);
   const session = await auth.api.getSession({
@@ -30,10 +42,43 @@ export default async function ProductDetails({
 
   const isAuthor = product.products.userId === session?.user.id;
 
-  // const isAlreadyBought
+  const isAlreadyBought = await IsAlreadyBougth(product.products.id);
+
+  console.log(isAlreadyBought, "Is alreadu ");
+
+  async function handlePaypal() {
+    "use server";
+
+    const { status, approvalUrl, orderId, message } = await CreatePaypalOrder(
+      product.products.id
+    );
+    if (status) {
+      redirect(approvalUrl);
+      return;
+    }
+  }
 
   return (
     <div className="">
+      {/* Error handeling for purchases */}
+      {success && (
+        <div className=" w-full p-4 text-center text-white bg-green-400 flex justify-center items-center gap-2 ">
+          <CircleAlert />
+          <h1>Asset purchase successful</h1>
+        </div>
+      )}
+      {cancelled && (
+        <div className=" w-full p-4 text-center text-white bg-red-400 flex justify-center items-center gap-2 ">
+          <CircleAlert />
+          <h1>Purchase cancelled</h1>
+        </div>
+      )}
+      {error && (
+        <div className=" w-full p-4 text-center text-white bg-red-400 flex justify-center items-center gap-2 ">
+          <CircleAlert />
+          <h1>Payment failed, please try again</h1>
+        </div>
+      )}
       {/* Grid */}
       <div className=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 pt-6">
         {/* Grid one */}
@@ -86,7 +131,14 @@ export default async function ProductDetails({
 
             <div>
               {isLoggedIn ? (
-                isAuthor ? (
+                isAlreadyBought ? (
+                  <div>
+                    <Button className=" w-full">
+                      <Download />
+                      Download
+                    </Button>
+                  </div>
+                ) : isAuthor ? (
                   <div className=" text-center">
                     <h1 className="font-bold text-xl">You own this asset</h1>
                     <p>You cannot buy your own asset</p>
@@ -109,18 +161,20 @@ export default async function ProductDetails({
                       </h1>
                     </div>
                     {/* Pay with paypal */}
-                    <Button variant={"outline"} className=" h-10 w-full p-4">
-                      <div className=" relative h-6 w-full ">
-                        <Image
-                          src={"/payment/paypal.png"}
-                          alt="paypal"
-                          fill
-                          className="
+                    <form action={handlePaypal}>
+                      <Button variant={"outline"} className=" h-10 w-full p-4">
+                        <div className=" relative h-6 w-full ">
+                          <Image
+                            src={"/payment/paypal.png"}
+                            alt="paypal"
+                            fill
+                            className="
                          object-contain
                         "
-                        />
-                      </div>
-                    </Button>
+                          />
+                        </div>
+                      </Button>
+                    </form>
                     {/* Pay with orange money */}
 
                     <Button
@@ -140,9 +194,11 @@ export default async function ProductDetails({
                   </div>
                 )
               ) : (
-                <Link href={"/auth"} className=" font-bold text-2xl">
-                  Log in to download
-                </Link>
+                <Button className=" w-full h-14">
+                  <Link href={"/auth"} className=" font-bold text-2xl">
+                    Log in to download
+                  </Link>
+                </Button>
               )}
             </div>
 
