@@ -1,5 +1,7 @@
 import { CreatePaypalOrder } from "@/app/actions/paypal/paypal";
+import { GetInvoiceAction } from "@/app/actions/userActions/Invoice";
 import {
+  GetPurchaseItem,
   GetSingleProductActions,
   GetUserUploadsAction,
   IsAlreadyBougth,
@@ -9,8 +11,16 @@ import { Button } from "@/components/ui/button";
 import { auth } from "@/lib/auth";
 import { productWithUser } from "@/lib/types/productTypes";
 import { AvatarImage } from "@radix-ui/react-avatar";
+import axios from "axios";
 import { promises } from "dns";
-import { CircleAlert, Download, Shapes, Share, UserPlus } from "lucide-react";
+import {
+  CircleAlert,
+  Download,
+  FileText,
+  Shapes,
+  Share,
+  UserPlus,
+} from "lucide-react";
 import { headers } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
@@ -42,19 +52,37 @@ export default async function ProductDetails({
 
   const isAuthor = product.products.userId === session?.user.id;
 
-  const isAlreadyBought = await IsAlreadyBougth(product.products.id);
+  const isAlreadyPurchased = await IsAlreadyBougth(product.products.id);
 
-  console.log(isAlreadyBought, "Is alreadu ");
+  const { res } = await GetPurchaseItem(product.products.id);
+
+  const invoice = await GetInvoiceAction(res?.purchase.id as string);
+
+  console.log(invoice, "Invoice");
 
   async function handlePaypal() {
     "use server";
 
-    const { status, approvalUrl, orderId, message } = await CreatePaypalOrder(
+    const { status, approvalUrl } = await CreatePaypalOrder(
       product.products.id
     );
     if (status) {
       redirect(approvalUrl);
       return;
+    }
+  }
+
+  async function handleDownload() {
+    "use server";
+
+    try {
+      const res = await axios.get(
+        `http://localhost:3000/api/download/${product.products.id}`
+      );
+
+      console.log(res, "Response from download");
+    } catch (error) {
+      console.log(error);
     }
   }
 
@@ -127,16 +155,34 @@ export default async function ProductDetails({
                 </div>
               </button>
             </div>
+
             {/* Download button */}
 
             <div>
               {isLoggedIn ? (
-                isAlreadyBought ? (
-                  <div>
-                    <Button className=" w-full">
-                      <Download />
-                      Download
-                    </Button>
+                isAlreadyPurchased ? (
+                  <div className=" place-items-center">
+                    <form className=" w-full">
+                      <Button
+                        type="submit"
+                        className=" cursor-pointer bg-green-600 w-full">
+                        <a
+                          href={`/api/download/${id}`}
+                          target="_blank"
+                          download
+                          className="flex items-center gap-1.5 ">
+                          <Download />
+                          Download now
+                        </a>
+                      </Button>
+                    </form>
+
+                    <Link
+                      href={`/invoice/${res?.purchase.id}`}
+                      className=" flex justify-center items-center w-[50%] gap-3 mt-4 border rounded p-1">
+                      <FileText />
+                      Invoice
+                    </Link>
                   </div>
                 ) : isAuthor ? (
                   <div className=" text-center">
@@ -145,8 +191,15 @@ export default async function ProductDetails({
                   </div>
                 ) : isFree ? (
                   <Button className=" w-full h-16">
-                    <div className=" w-full py-10 cursor-pointer ">
-                      <h1 className=" font-bold text-2xl">Free download</h1>
+                    <div className=" w-full py-10 cursor-pointer  ">
+                      <a
+                        href={`/api/download/free/${id}`}
+                        target="_blank"
+                        download
+                        className="flex items-center gap-1.5 text-center justify-center font-bold text-xl ">
+                        <Download />
+                        Download now
+                      </a>{" "}
                       <p className=" text-sm text-muted-foreground">
                         Attribution required
                       </p>

@@ -1,11 +1,11 @@
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { orderItems, orders, products } from "@/lib/db/schema";
 import axios from "axios";
 import { and, eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { env } from "../../../../env";
+import { invoices, products, purchase, purchaseItems } from "@/lib/db/schema";
 
 export async function CreatePaypalOrder(productId: string) {
   const session = await auth.api.getSession({
@@ -31,12 +31,12 @@ export async function CreatePaypalOrder(productId: string) {
     // 2. Check if already purchased
     const alreadyBought = await db
       .select()
-      .from(orderItems)
-      .innerJoin(orders, eq(orderItems.orderId, orders.id))
+      .from(purchaseItems)
+      .innerJoin(purchase, eq(purchaseItems.purchaseId, purchase.id))
       .where(
         and(
-          eq(orders.userId, session.user.id),
-          eq(orderItems.productId, productId)
+          eq(purchase.userId, session.user.id),
+          eq(purchaseItems.productId, productId)
         )
       )
       .limit(1);
@@ -101,15 +101,6 @@ export async function CreatePaypalOrder(productId: string) {
   }
 }
 
-// export const orders = pgTable("orders", {
-//   id: uuid("id").primaryKey().defaultRandom(),
-//   userId: text("user_id")
-//     .notNull()
-//     .references(() => user.id, { onDelete: "cascade" }),
-//   totalAmount: integer("total_amount").notNull(),
-//   status: statusEnum("status").default("pending"), // or 'pending'
-//   paypalOrderId: text("paypal_order_id").notNull(),
-//   createdAt: timestamp("created_at").$defaultFn(() => new Date()),
 // });
 export async function SaveOrderToDatabaseAction({
   userId,
@@ -134,20 +125,51 @@ export async function SaveOrderToDatabaseAction({
       };
     }
     // add to database
-    const [order] = await db
-      .insert(orders)
+    const [purchaseValue] = await db
+      .insert(purchase)
       .values({
         userId,
         totalAmount: product.price,
         status: "completed",
         paypalOrderId,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       })
       .returning();
 
-    const value = await db.insert(orderItems).values({
-      orderId: order.id,
-      price: order.totalAmount,
+    //  Add to invoice table
+    const now = new Date();
+    const taxRate = 0.1;
+    const subtotal = purchaseValue.totalAmount; // already in cents
+    const tax = Math.round(subtotal * taxRate); // still in cents
+    const total = subtotal + tax;
+
+    const invoiceNumber = `INV-${new Date().getFullYear()}${(
+      new Date().getMonth() + 1
+    )
+      .toString()
+      .padStart(2, "0")}-${Math.floor(1000 + Math.random() * 9000)}`;
+
+    await db.insert(invoices).values({
+      buyerId: userId,
+      sellerId: product.userId,
+      purchaseId: purchaseValue.id,
+      subtotal,
+      tax,
+      total,
+      currency: "USD",
+      status: "paid",
+      invoiceNumber,
+      issueDate: now,
+      createdAt: now,
+      updatedAt: now,
+    });
+
+    await db.insert(purchaseItems).values({
+      purchaseId: purchaseValue.id,
+      price: purchaseValue.totalAmount,
       productId: product.id,
+      updatedAt: now,
     });
     return {
       status: true,

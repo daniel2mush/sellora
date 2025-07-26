@@ -10,7 +10,7 @@ import {
   index,
 } from "drizzle-orm/pg-core";
 
-/// --- Enum for Order Table ---
+/// --- Enum for Purchase Table ---
 
 const statusEnum = pgEnum("status", ["pending", "rejected", "completed"]);
 const categoryEnum = pgEnum("category", [
@@ -32,12 +32,8 @@ export const user = pgTable("user", {
     .$defaultFn(() => false)
     .notNull(),
   image: text("image"),
-  createdAt: timestamp("created_at")
-    .$defaultFn(() => /* @__PURE__ */ new Date())
-    .notNull(),
-  updatedAt: timestamp("updated_at")
-    .$defaultFn(() => /* @__PURE__ */ new Date())
-    .notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
   role: text("role"),
   banned: boolean("banned"),
   banReason: text("ban_reason"),
@@ -87,12 +83,8 @@ export const verification = pgTable("verification", {
   identifier: text("identifier").notNull(),
   value: text("value").notNull(),
   expiresAt: timestamp("expires_at").notNull(),
-  createdAt: timestamp("created_at").$defaultFn(
-    () => /* @__PURE__ */ new Date()
-  ),
-  updatedAt: timestamp("updated_at").$defaultFn(
-    () => /* @__PURE__ */ new Date()
-  ),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 /// --- Products Table ---
@@ -103,12 +95,12 @@ export const products = pgTable("products", {
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
   title: text("title").notNull(),
-  description: text("description").notNull(),
-  price: integer("price").notNull(), // in cents
+  description: text("description"),
+  price: integer("price").notNull(),
   isPublished: boolean("is_published").default(false),
   thumbnailUrl: text("thumbnail_url"),
-  createdAt: timestamp("created_at").$defaultFn(() => new Date()),
-  updatedAt: timestamp("updated_at").$defaultFn(() => new Date()),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").notNull(),
 });
 
 /// --- Assets Table --- ///
@@ -121,43 +113,45 @@ export const assets = pgTable(
       .references(() => products.id)
       .notNull(),
     url: text("url").notNull(),
-    publicId: text("public_id").notNull(), // Cloudinary ID
-    type: text("type"), // pdf, zip, etc.
+    publicId: text("public_id").notNull(),
+    type: text("type"),
     category: categoryEnum("category").notNull(),
     size: integer("size"),
-    createdAt: timestamp("created_at").$defaultFn(() => new Date()),
-    updatedAt: timestamp("updated_at").$defaultFn(() => new Date()),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").notNull(),
   },
   (table) => ({
     categoryIdx: index("category_idx").on(table.category),
   })
 );
 
-/// --- Orders Table ---
+/// --- Purchases Table ---
 
-export const orders = pgTable("orders", {
+export const purchase = pgTable("purchase", {
   id: uuid("id").primaryKey().defaultRandom(),
   userId: text("user_id")
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
   totalAmount: integer("total_amount").notNull(),
-  status: statusEnum("status").default("pending"), // or 'pending'
+  status: statusEnum("status").default("pending"),
   paypalOrderId: text("paypal_order_id").notNull(),
-  createdAt: timestamp("created_at").$defaultFn(() => new Date()),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").notNull(),
 });
 
-/// --- Order Items Table  -----
+/// --- Purchase Items Table  -----
 
-export const orderItems = pgTable("order_items", {
+export const purchaseItems = pgTable("purchase_items", {
   id: uuid("id").primaryKey().defaultRandom(),
-  orderId: uuid("order_id")
-    .references(() => orders.id)
+  purchaseId: uuid("purchase_id")
+    .references(() => purchase.id)
     .notNull(),
   productId: uuid("product_id")
     .references(() => products.id)
     .notNull(),
   price: integer("price").notNull(),
-  createdAt: timestamp("created_at").$defaultFn(() => new Date()),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").notNull(),
 });
 
 // --- Download Table ---
@@ -170,23 +164,58 @@ export const downloads = pgTable("downloads", {
   assetId: uuid("asset_id")
     .references(() => assets.id)
     .notNull(),
-  downloadedAt: timestamp("downloaded_at").$defaultFn(() => new Date()),
+  downloadedAt: timestamp("downloaded_at").defaultNow(),
+});
+
+// -- Invoice table
+
+export const invoices = pgTable("invoices", {
+  id: uuid("id").primaryKey().defaultRandom(),
+
+  purchaseId: uuid("purchase_id")
+    .notNull()
+    .references(() => purchase.id, { onDelete: "cascade" }),
+
+  buyerId: text("buyer_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+
+  sellerId: text("seller_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+
+  invoiceNumber: text("invoice_number").notNull().unique(),
+  issueDate: timestamp("issue_date").defaultNow().notNull(),
+
+  subtotal: integer("subtotal").notNull(),
+  tax: integer("tax").default(0),
+  total: integer("total").notNull(),
+
+  currency: text("currency").default("USD").notNull(),
+  status: text("status").default("paid").notNull(),
+
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").notNull(),
 });
 
 // relations
 
-//----- User Relations --------
 export const UserRelations = relations(user, ({ one, many }) => {
   return {
     sessions: many(session),
     accounts: many(account),
     products: many(products),
-    orders: many(orders),
+    purchase: many(purchase),
     downloads: many(downloads),
+    invoiceBuyer: many(invoices, {
+      relationName: "buyer",
+    }),
+    invoiceSeller: many(invoices, {
+      relationName: "seller",
+    }),
   };
 });
 
-// ----- Session Relations -------
 export const SessionRelations = relations(session, ({ one }) => {
   return {
     user: one(user, {
@@ -195,8 +224,6 @@ export const SessionRelations = relations(session, ({ one }) => {
     }),
   };
 });
-
-// --- Account Relations ------
 
 export const AccountRelations = relations(account, ({ one }) => {
   return {
@@ -207,8 +234,6 @@ export const AccountRelations = relations(account, ({ one }) => {
   };
 });
 
-/// --- Product Relations ------
-
 export const ProductRelations = relations(products, ({ many, one }) => {
   return {
     user: one(user, {
@@ -216,11 +241,9 @@ export const ProductRelations = relations(products, ({ many, one }) => {
       references: [user.id],
     }),
     assets: many(assets),
-    orderItems: many(orderItems),
+    purchaseItems: many(purchaseItems),
   };
 });
-
-// ---- Assets Relations -----
 
 export const AssetRelations = relations(assets, ({ one, many }) => {
   return {
@@ -232,34 +255,28 @@ export const AssetRelations = relations(assets, ({ one, many }) => {
   };
 });
 
-// --- Order Relations -----
-
-export const OrdersRelations = relations(orders, ({ one, many }) => {
+export const purchaseRelations = relations(purchase, ({ one, many }) => {
   return {
     user: one(user, {
-      fields: [orders.userId],
+      fields: [purchase.userId],
       references: [user.id],
     }),
-    orderItems: many(orderItems),
+    purchaseItems: many(purchaseItems),
   };
 });
 
-// --- Order items relations ----
-
-export const OrderItemsRelations = relations(orderItems, ({ one }) => {
+export const purchaseItemsRelations = relations(purchaseItems, ({ one }) => {
   return {
-    order: one(orders, {
-      fields: [orderItems.orderId],
-      references: [orders.id],
+    purchase: one(purchase, {
+      fields: [purchaseItems.purchaseId],
+      references: [purchase.id],
     }),
     product: one(products, {
-      fields: [orderItems.productId],
+      fields: [purchaseItems.productId],
       references: [products.id],
     }),
   };
 });
-
-// --- Download Relations ----
 
 export const DownloadRelations = relations(downloads, ({ one }) => {
   return {
@@ -274,3 +291,20 @@ export const DownloadRelations = relations(downloads, ({ one }) => {
     }),
   };
 });
+
+export const InvoiceRelations = relations(invoices, ({ one }) => ({
+  buyer: one(user, {
+    fields: [invoices.buyerId],
+    references: [user.id],
+    relationName: "buyer",
+  }),
+  seller: one(user, {
+    fields: [invoices.sellerId],
+    references: [user.id],
+    relationName: "seller",
+  }),
+  purchase: one(purchase, {
+    fields: [invoices.purchaseId],
+    references: [purchase.id],
+  }),
+}));

@@ -5,15 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1752689747713,
-      "tag": "0000_cuddly_starbolt",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1753121063970,
-      "tag": "0001_lowly_jackpot",
+      "when": 1753449898783,
+      "tag": "0000_wild_whirlwind",
       "breakpoints": true
     }
   ]

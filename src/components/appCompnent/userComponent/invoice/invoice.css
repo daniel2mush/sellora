@@ -1,0 +1,85 @@
+/* invoice/invoice.css */
+.invoice-container,
+.invoice-container * {
+  --bg-blue-600: rgb(37, 99, 235); /* Tailwind's blue-600 */
+  --text-white: rgb(255, 255, 255); /* White */
+  --text-gray-500: rgb(107, 114, 128); /* Tailwind's gray-500 */
+  --bg-gray-600: rgb(75, 85, 99); /* Tailwind's gray-600 */
+  --bg-gray-100: rgb(243, 244, 246); /* Tailwind's gray-100 */
+  --hover-blue-700: rgb(29, 78, 216); /* Tailwind's blue-700 */
+  --hover-gray-700: rgb(55, 65, 81); /* Tailwind's gray-700 */
+  --bg-white: rgb(255, 255, 255); /* White */
+  --border-gray: rgb(209, 213, 219); /* Tailwind's gray-300 for borders */
+  --text-gray-900: rgb(17, 24, 39); /* Tailwind's gray-900 for text */
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1); /* Tailwind's shadow-md */
+}
+
+.invoice-container button.bg-blue-600 {
+  background-color: var(--bg-blue-600) !important;
+}
+.invoice-container button.text-white {
+  color: var(--text-white) !important;
+}
+.invoice-container .text-gray-500 {
+  color: var(--text-gray-500) !important;
+}
+.invoice-container button.bg-gray-600 {
+  background-color: var(--bg-gray-600) !important;
+}
+.invoice-container .bg-gray-100 {
+  background-color: var(--bg-gray-100) !important;
+}
+.invoice-container button.bg-blue-600:hover {
+  background-color: var(--hover-blue-700) !important;
+}
+.invoice-container button.bg-gray-600:hover {
+  background-color: var(--hover-gray-700) !important;
+}
+.invoice-container .bg-white {
+  background-color: var(--bg-white) !important;
+}
+.invoice-container .border {
+  border-color: var(--border-gray) !important;
+}
+.invoice-container .text-gray-900 {
+  color: var(--text-gray-900) !important;
+}
+.invoice-container .font-bold {
+  font-weight: 700 !important;
+}
+.invoice-container .font-semibold {
+  font-weight: 600 !important;
+}
+.invoice-container .text-xl {
+  font-size: 1.25rem !important;
+  line-height: 1.75rem !important;
+}
+.invoice-container .text-sm {
+  font-size: 0.875rem !important;
+  line-height: 1.25rem !important;
+}
+.invoice-container .text-xs {
+  font-size: 0.75rem !important;
+  line-height: 1rem !important;
+}
+.invoice-container .shadow-md {
+  box-shadow: var(--shadow-md) !important;
+}
+.invoice-container .rounded {
+  border-radius: 0.375rem !important;
+}
+.invoice-container .rounded-xl {
+  border-radius: 0.75rem !important;
+}
+.invoice-container .border-collapse {
+  border-collapse: collapse !important;
+}
+
+/* Override any global styles */
+.invoice-container *,
+.invoice-container *:before,
+.invoice-container *:after {
+  color: inherit !important;
+  background-color: inherit !important;
+  border-color: inherit !important;
+}

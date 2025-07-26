@@ -1,6 +1,13 @@
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { assets, orderItems, orders, products, user } from "@/lib/db/schema";
+import {
+  assets,
+  downloads,
+  products,
+  purchase,
+  purchaseItems,
+  user,
+} from "@/lib/db/schema";
 import { and, desc, eq, gt, or, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
@@ -124,16 +131,20 @@ export async function IsAlreadyBougth(productId: string) {
     headers: await headers(),
   });
 
-  if (!session?.user) redirect("/auth");
+  if (!session?.user)
+    return {
+      status: false,
+      message: "Log in to continue",
+    };
   try {
     const res = await db
       .select()
-      .from(orderItems)
-      .innerJoin(orders, eq(orders.id, orderItems.orderId))
+      .from(purchaseItems)
+      .innerJoin(purchase, eq(purchase.id, purchaseItems.purchaseId))
       .where(
         and(
-          eq(orderItems.productId, productId),
-          eq(orders.userId, session.user.id)
+          eq(purchaseItems.productId, productId),
+          eq(purchase.userId, session.user.id)
         )
       )
       .limit(1);
@@ -141,5 +152,100 @@ export async function IsAlreadyBougth(productId: string) {
     return res.length > 0;
   } catch (error) {
     return false;
+  }
+}
+
+export async function GetPurchaseItem(productId: string) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session?.user)
+    return {
+      status: false,
+      message: "Log in to continue",
+    };
+  try {
+    const [res] = await db
+      .select()
+      .from(purchaseItems)
+      .innerJoin(purchase, eq(purchase.id, purchaseItems.purchaseId))
+      .where(and(eq(purchaseItems.productId, productId)));
+
+    return {
+      res,
+    };
+  } catch (error) {
+    return {
+      error: true,
+      message: "Error occured, please try agan",
+    };
+  }
+}
+
+export async function GetAssetActions(productId: string) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session?.user)
+    return {
+      status: false,
+      message: "Log in to continue",
+    };
+
+  try {
+    const [res] = await db
+      .select()
+      .from(assets)
+      .where(eq(assets.productId, productId))
+      .innerJoin(products, eq(products.id, productId));
+
+    return {
+      status: true,
+      assets: res,
+    };
+  } catch (error) {
+    console.log(error);
+
+    return {
+      status: false,
+      message: "Error occured, please try agan",
+    };
+  }
+}
+
+export async function DownloadAction({
+  userId,
+  assetId,
+}: {
+  userId: string;
+  assetId: string;
+}) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session?.user)
+    return {
+      status: false,
+      message: "Log in to continue",
+    };
+  try {
+    const res = await db.insert(downloads).values({
+      userId,
+      assetId,
+    });
+
+    return {
+      status: true,
+      message: "Added to database successfully",
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      status: false,
+      message: "Added to database successfully",
+    };
   }
 }

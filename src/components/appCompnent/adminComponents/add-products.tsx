@@ -94,10 +94,7 @@ export default function AddProductForm({ setOpen, products }: AddProductProps) {
       .string()
       .min(10, "Title should be more than 10 characters")
       .max(122, "Title should be less than 122 characters"),
-    description: z
-      .string()
-      .min(10, "Description should be more than 10 characters")
-      .max(122, "Description should be less than 122 characters"),
+    description: z.string().optional(),
     price: z.string().refine((val) => /^\d+\.\d{1,2}$/.test(val), {
       message: "Enter a valid price with cents (e.g. 19.99)",
     }),
@@ -147,7 +144,7 @@ export default function AddProductForm({ setOpen, products }: AddProductProps) {
 
         const DataBaseFormData = new FormData();
         DataBaseFormData.append("title", data.title);
-        DataBaseFormData.append("description", data.description);
+        DataBaseFormData.append("description", data.description || "");
         DataBaseFormData.append("price", parsed.price.toString());
         DataBaseFormData.append("thumbnailUrl", thumbnail.secure_url);
         DataBaseFormData.append("assetUrl", assets.secure_url);

@@ -34,3 +34,42 @@ export interface productWithUser {
   products: productTypes;
   user: userTypes;
 }
+
+export type InvoiceTypes = {
+  seller: {
+    name: string;
+    email: string;
+  };
+  buyer: {
+    name: string;
+    email: string;
+  };
+  purchase: {
+    id: string;
+    userId: string;
+    totalAmount: number;
+    status: string;
+    paypalOrderId: string;
+    createdAt: Date;
+    updatedAt: Date;
+  };
+  product: {
+    name: string;
+    price: number;
+  };
+  invoices: {
+    id: string;
+    purchaseId: string;
+    buyerId: string;
+    sellerId: string;
+    invoiceNumber: string;
+    issueDate: Date;
+    subtotal: number;
+    tax: number;
+    total: number;
+    currency: string;
+    status: string;
+    createdAt: Date;
+    updatedAt: Date;
+  };
+};

@@ -2,7 +2,7 @@
 
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { assets, orderItems, orders, products } from "@/lib/db/schema";
+import { assets, products } from "@/lib/db/schema";
 import { and, desc, eq, ilike, or } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
@@ -70,6 +70,7 @@ export async function addNewProductAction(form: FormData) {
         thumbnailUrl: data.thumbnailUrl,
         createdAt: new Date(),
         userId: session.user.id,
+        updatedAt: new Date(),
       })
       .returning();
 
@@ -85,6 +86,7 @@ export async function addNewProductAction(form: FormData) {
         publicId: data.publicId,
         createdAt: new Date(),
         category: data.category,
+        updatedAt: new Date(),
       })
       .returning();
 
