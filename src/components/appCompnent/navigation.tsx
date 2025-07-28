@@ -48,8 +48,8 @@ export default function NavigationItems() {
 
   const navSession = [
     {
-      name: "My Orders",
-      path: "/dashboard/orders",
+      name: "Purchases",
+      path: "/dashboard/purchases",
     },
     {
       name: "Downloads",

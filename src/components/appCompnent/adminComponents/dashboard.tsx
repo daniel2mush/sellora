@@ -14,6 +14,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { AdminTotalProductProps } from "@/lib/types/admin/productsTypes";
 import {
   ArrowRightLeft,
   CreditCard,
@@ -36,7 +37,11 @@ import {
   YAxis,
 } from "recharts";
 
-export default function AdminDashboard() {
+export default function AdminDashboard({
+  DashboardProps,
+}: {
+  DashboardProps: AdminTotalProductProps[];
+}) {
   interface DashboardOverviewOne {
     icon: React.ReactNode;
     price: string;
@@ -44,28 +49,46 @@ export default function AdminDashboard() {
     color: string;
   }
 
+  // Last month
+  const now = new Date();
+  const start = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  const end = new Date(now.getFullYear(), now.getMonth(), 0);
+  const LastMonth = DashboardProps.filter((o) => {
+    if (o.purchaseItems !== undefined) {
+      const d = new Date(o.purchaseItems?.createdAt as Date);
+      const value = d >= start && d <= end;
+
+      return value;
+    }
+  }).reduce((sum, o) => sum + (o.purchaseItems?.price! ?? 0), 0);
+
+  // Total price
+  let TotalPrice = DashboardProps.reduce(
+    (sum, o) => sum + (o.purchaseItems?.price ?? 0),
+    0
+  );
+  let TotalIncome = DashboardProps.reduce(
+    (sum, o) => sum + o.products.price,
+    0
+  );
+
   const dashboardOverview1: DashboardOverviewOne[] = [
     {
       title: "Total Sales",
-      price: "$250.00",
+      price: `$${(TotalPrice / 100).toFixed(2)}`,
       icon: <ArrowRightLeft />,
       color: "#4d8bff",
     },
     {
       title: "Total Income",
-      price: "$250.00",
+      price: `$${(TotalIncome / 100).toFixed(2)}`,
       icon: <Shuffle />,
       color: "#4da6ff",
     },
-    {
-      title: "Orders paid",
-      price: "$250.00",
-      icon: <ShoppingCart />,
-      color: "#ffb84d",
-    },
+
     {
       title: "Last Month",
-      price: "$250.00",
+      price: `$${(LastMonth / 100).toFixed(2)}`,
       icon: <CreditCard />,
       color: "#ff7f4d",
     },
@@ -78,27 +101,6 @@ export default function AdminDashboard() {
     color: string;
   }
 
-  const ordersDashBoardView: orderDashboardView[] = [
-    {
-      icon: <ShoppingCart />,
-      title: "Total Orders",
-      value: "2220",
-      color: "#ff4d4d",
-    },
-    {
-      icon: <Download />,
-      title: "Total Downloads",
-      value: "2220",
-      color: "#ff7f4d",
-    },
-    {
-      icon: <Package />,
-      title: "Total Products",
-      value: "2220",
-      color: "#ffb84d",
-    },
-  ];
-
   interface Chart {
     name: string;
     uv: number;
@@ -106,12 +108,16 @@ export default function AdminDashboard() {
     amt: number;
   }
   const chartData = [
-    { month: "January", sales: 186, income: 80 },
-    { month: "February", sales: 305, income: 200 },
-    { month: "March", sales: 237, income: 120 },
-    { month: "April", sales: 73, income: 190 },
-    { month: "May", sales: 209, income: 130 },
-    { month: "June", sales: 214, income: 140 },
+    { month: "January", sales: 20 },
+    { month: "February", sales: 50 },
+    { month: "March", sales: 10 },
+    { month: "April", sales: 100 },
+    { month: "May", sales: 0 },
+    // { month: "February", sales: 305, income: 200 },
+    // { month: "March", sales: 237, income: 120 },
+    // { month: "April", sales: 73, income: 190 },
+    // { month: "May", sales: 209, income: 130 },
+    // { month: "June", sales: 214, income: 140 },
   ];
 
   const chartConfig = {
@@ -151,28 +157,7 @@ export default function AdminDashboard() {
           </Card>
         ))}
       </div>
-      {/* <div className=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {ordersDashBoardView.map((order) => (
-          <div
-            style={{
-              background: `${order.color}`,
-            }}
-            key={order.title}
-            className="flex items-center gap-2 shadow rounded-lg border p-3  ">
-            <div
-              style={{
-                background: `${order.color}`,
-              }}
-              className=" rounded-full p-3 w-15 h-15 flex items-center justify-center text-white ">
-              {order.icon}
-            </div>
-            <div>
-              <p>{order.title}</p>
-              <h1>{order.value}</h1>
-            </div>
-          </div>
-        ))}
-      </div> */}
+
       <Card>
         <CardHeader>
           <CardTitle className=" text-2xl font-bold">Income vs Sales</CardTitle>

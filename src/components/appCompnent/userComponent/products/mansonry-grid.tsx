@@ -7,6 +7,7 @@ import Link from "next/link";
 import { Download, Shapes } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { productWithUser } from "@/lib/types/productTypes";
+import { Badge } from "@/components/ui/badge";
 
 export default function MasonryGrid({
   products,
@@ -34,6 +35,15 @@ export default function MasonryGrid({
               className="w-full h-auto object-contain group-hover:scale-110 transition-all duration-500"
               loading="lazy"
             />
+
+            {/* Free tag */}
+
+            {data.products.price === 0 && (
+              <div className=" absolute top-1 right-1  ">
+                <Badge variant={"secondary"}>Free</Badge>
+              </div>
+            )}
+
             <Link href={`/products/${data.products.id}`}>
               <div className=" opacity-0 group-hover:opacity-100 absolute top-0 right-0 left-0 bg-gradient-to-t  from-black via-black/20 to-black/0 w-full h-full  px-5">
                 <div className=" h-[100%] relative text-white mb-2 space-y-2 ">
@@ -57,7 +67,7 @@ export default function MasonryGrid({
                   </div>
 
                   {/* Shortcuts */}
-                  <div className=" absolute top-5 right-0  z-50">
+                  {/* <div className=" absolute top-5 right-0  z-50">
                     <div className=" flex flex-col  gap-2 ">
                       <Button
                         className="bg-white  cursor-pointer hover:scale-105 text-gray-800 hover:bg-white"
@@ -70,7 +80,7 @@ export default function MasonryGrid({
                         <Shapes size={20} />
                       </Button>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </Link>

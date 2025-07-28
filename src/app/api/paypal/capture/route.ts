@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { NextRequest, NextResponse } from "next/server";
 import { env } from "../../../../../env";
 import { SaveOrderToDatabaseAction } from "@/app/actions/paypal/paypal";
+import { revalidatePath } from "next/cache";
 
 // Second action
 export async function GET(request: NextRequest) {
@@ -60,6 +61,11 @@ export async function GET(request: NextRequest) {
           new URL(`/products/${assetId}?error=recording_failed`, request.url)
         );
       }
+
+      revalidatePath("/admin/dashboard/products");
+      revalidatePath("/admin/dashboard/payments");
+      revalidatePath("/admin/dashboard");
+      revalidatePath("/products");
       return NextResponse.redirect(
         new URL(`/products/${assetId}?success=true `, request.url)
       );

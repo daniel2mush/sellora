@@ -69,6 +69,7 @@ export default function AdminProducts({ products }: AdminProductProps) {
   const [productselected, setProductSelected] = useState<productTypes | null>(
     null
   );
+  const [productOpen, setProductOpen] = useState(false);
 
   const [filterValue, setFilterValue] = useState("All Products");
   const [filterOpen, setFilterOpen] = useState(false);
@@ -142,9 +143,19 @@ export default function AdminProducts({ products }: AdminProductProps) {
           <h1 className=" text-4xl font-bold">Products</h1>
           <p className=" text-muted-foreground">Manage your products</p>
         </div>
-        <Button className=" cursor-pointer">
-          <Plus /> Add a product
-        </Button>
+        <Dialog open={productOpen} onOpenChange={setProductOpen}>
+          <DialogTrigger asChild>
+            <Button className=" cursor-pointer">
+              <Plus /> Add a product
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Add new product</DialogTitle>
+            </DialogHeader>
+            <AddProductForm setOpen={() => setProductOpen(false)} />
+          </DialogContent>
+        </Dialog>
       </div>
       <div className=" flex gap-10 items-center">
         <div className=" flex items-center border shadow w-full max-w-md rounded p-2 space-x-2">

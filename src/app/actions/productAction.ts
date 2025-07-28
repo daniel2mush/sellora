@@ -2,7 +2,13 @@
 
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { assets, products } from "@/lib/db/schema";
+import {
+  assets,
+  products,
+  purchase,
+  purchaseItems,
+  user,
+} from "@/lib/db/schema";
 import { and, desc, eq, ilike, or } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
@@ -379,3 +385,75 @@ export async function GetAssetPublicIdAction(productId: string) {
     };
   }
 }
+
+export async function GetproductTotals() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session)
+    return {
+      success: false,
+      message: "You have to be logged in to add a product",
+    };
+
+  if (session && session.user.role !== "admin")
+    return {
+      success: false,
+      message: "You are not authorized to make this request",
+    };
+
+  try {
+    const res = await db
+      .select({
+        products,
+        purchaseItems,
+        user,
+      })
+      .from(products)
+      .leftJoin(purchaseItems, eq(purchaseItems.productId, products.id))
+      .leftJoin(purchase, eq(purchase.id, purchaseItems.purchaseId))
+      .leftJoin(user, eq(user.id, purchase.userId))
+      .where(eq(products.userId, session.user.id));
+
+    return {
+      status: true,
+      res,
+    };
+  } catch (error) {
+    console.error(error);
+
+    return {
+      status: false,
+      message: "Error occured while fetching products, please try again",
+    };
+  }
+}
+
+// export async function GetAllPaidProductAction() {
+
+//    const session = await auth.api.getSession({
+//     headers: await headers(),
+//   });
+
+//   if (!session)
+//     return {
+//       success: false,
+//       message: "You have to be logged in to add a product",
+//     };
+
+//   if (session && session.user.role !== "admin")
+//     return {
+//       success: false,
+//       message: "You are not authorized to make this request",
+//     };
+
+//   try {
+
+//     const res = await db.select().from(purchaseItems).where(eq(purchaseItems.))
+
+//   } catch (error) {
+
+//   }
+
+// }

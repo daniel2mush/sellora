@@ -249,3 +249,46 @@ export async function DownloadAction({
     };
   }
 }
+
+export async function GetAllPurchasedItems() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session?.user)
+    return {
+      status: false,
+      message: "Log in to continue",
+    };
+
+  try {
+    const res = await db
+      .select({
+        products: {
+          id: products.id,
+          title: products.title,
+          thumbnail: products.thumbnailUrl,
+        },
+        purchaseItems: {
+          price: purchaseItems.price,
+          purchaseDate: purchaseItems.createdAt,
+        },
+        purchase,
+      })
+      .from(purchase)
+      .innerJoin(purchaseItems, eq(purchaseItems.purchaseId, purchase.id))
+      .innerJoin(products, eq(products.id, purchaseItems.productId))
+      .where(eq(purchase.userId, session.user.id));
+
+    return {
+      status: true,
+      res,
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      status: false,
+      message: "Added to database successfully",
+    };
+  }
+}
