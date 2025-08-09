@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
-import Navigation from "@/components/appCompnent/navigation";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { Providers } from "@/components/providers/provider";
+import { NavigationWrapper } from "@/components/appCompnent/userComponent/navigation/navigationWrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,8 +36,9 @@ export default async function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        {isUser && <Navigation />}
-        <Providers>{children}</Providers>
+        <NavigationWrapper>
+          <Providers>{children}</Providers>
+        </NavigationWrapper>
         <Toaster richColors />
       </body>
     </html>

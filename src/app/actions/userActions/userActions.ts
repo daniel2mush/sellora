@@ -3,7 +3,7 @@
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { user } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
@@ -45,3 +45,28 @@ export const SetUserToAdminActions = async (userId: string) => {
     };
   }
 };
+
+export async function GetUserInformation(userId: string) {
+  // const session = await auth.api.getSession({
+  //   headers: await headers()
+  // });
+
+  try {
+    const [userInfo] = await db
+      .select()
+      .from(user)
+      .where(and(eq(user.id, userId), eq(user.username, userId)));
+
+    return {
+      status: true,
+      userInfo,
+    };
+  } catch (error) {
+    console.log(error);
+
+    return {
+      status: false,
+      message: "Something went wrong, please try again later",
+    };
+  }
+}

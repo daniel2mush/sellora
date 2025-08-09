@@ -1,7 +1,7 @@
 "use server";
 
 import axios from "axios";
-import { env } from "../../../env";
+import { env } from "../../../../env";
 
 export async function getSignature(timestamp: number, public_id: string) {
   if (!timestamp)

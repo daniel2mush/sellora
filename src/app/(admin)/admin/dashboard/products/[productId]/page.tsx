@@ -31,16 +31,18 @@ export default async function ProductDetails({
   params,
   searchParams,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ productId: string }>;
   searchParams: Promise<{
     success: string;
     error: string;
     cancelled: string;
   }>;
 }) {
-  const id = (await params).id;
+  const id = (await params).productId;
   const product = (await GetSingleProductActions(id)) as productWithUser;
+
   if (!product) return notFound();
+
   const { error, success, cancelled } = await searchParams;
 
   const { count } = await GetUserUploadsAction(product.user.id);
@@ -127,12 +129,12 @@ export default async function ProductDetails({
           </div>
         </div>
         {/* Grid 2 */}
-        <div className=" h-full place-items-center py-[10vh]">
-          <div className=" w-[70%] space-y-5">
+        <div className=" h-full place-items-center py-[10vh] ">
+          <div className=" w-[90%] space-y-5">
             {/* Profile */}
             <div className=" flex justify-between items-center gap-4">
               <div className=" flex items-center gap-6">
-                <Avatar className=" w-15 h-15">
+                <Avatar className=" w-10 h-10">
                   <AvatarFallback>{product.user.name.charAt(0)}</AvatarFallback>
                   <AvatarImage
                     src={product.user.image as string}

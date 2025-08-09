@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import {
   assets,
+  downloads,
   products,
   purchase,
   purchaseItems,
@@ -96,9 +97,9 @@ export async function addNewProductAction(form: FormData) {
       })
       .returning();
 
-    revalidatePath("/admin/dashboard");
-    revalidatePath("/admin/dashboard/products");
-    revalidatePath("/products");
+    // revalidatePath("/admin/dashboard");
+    // revalidatePath("/admin/dashboard/products");
+    // revalidatePath("/products");
 
     return {
       success: true,
@@ -155,6 +156,7 @@ export async function getProductsActions(searchQuery?: boolean | undefined) {
     const productsData = await db
       .select()
       .from(products)
+
       .where(and(...conditions))
       .orderBy(desc(products.createdAt));
 
@@ -205,9 +207,9 @@ export async function PublishProductAction(productId: string) {
       })
       .where(eq(products.id, productId));
 
-    revalidatePath("/admin/dashboard/products");
-    revalidatePath("/admin/dashboard");
-    revalidatePath("/products");
+    // revalidatePath("/admin/dashboard/products");
+    // revalidatePath("/admin/dashboard");
+    // revalidatePath("/products");
 
     return {
       success: true,
@@ -230,7 +232,7 @@ const ProductVerify = z.object({
   thumbnailUrl: z.string().optional(),
 });
 
-export async function EditProductAction(productId: string, { ...args }) {
+export async function UpdateProductAction(productId: string, { ...args }) {
   const productData = ProductVerify.parse({ ...args });
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -294,7 +296,7 @@ export async function DeleteProductActions({
 }: {
   productId: string;
 }) {
-  console.log(productId, "PRoduct Id");
+  console.log("Deleting product with ID:", productId);
 
   const idSchema = z.object({
     productId: z.string(),
@@ -331,20 +333,28 @@ export async function DeleteProductActions({
         message: "You are not authorized to make this change",
       };
     }
-    console.log(value.id, "Product");
+    // console.log(value.id, "Product");
+
+    // finding asset
+    const [asset] = await db
+      .select()
+      .from(assets)
+      .where(eq(assets.productId, productId));
+
+    if (asset) {
+      await db.delete(downloads).where(eq(downloads.assetId, asset.id));
+    }
     await db.delete(assets).where(eq(assets.productId, productIdVerified));
 
     await db.delete(products).where(eq(products.id, productIdVerified));
-
-    revalidatePath("/admin/dashboard/products");
-    revalidatePath("/admin/dashboard");
-    revalidatePath("/products");
 
     return {
       success: true,
       message: "Product deleted successfully",
     };
   } catch (e) {
+    console.log(e);
+
     return {
       success: false,
       message: "Error occured please try again",
@@ -417,14 +427,14 @@ export async function GetproductTotals() {
       .where(eq(products.userId, session.user.id));
 
     return {
-      status: true,
+      success: true,
       res,
     };
   } catch (error) {
     console.error(error);
 
     return {
-      status: false,
+      success: false,
       message: "Error occured while fetching products, please try again",
     };
   }
@@ -456,4 +466,32 @@ export async function GetproductTotals() {
 
 //   }
 
+// }
+
+// export async function GetSingleAdminProduct(productId: string) {
+//   const session = await auth.api.getSession({
+//     headers: await headers(),
+//   });
+
+//   if (!session)
+//     return {
+//       success: false,
+//       message: "You have to be logged in to add a product",
+//     };
+
+//   if (session && session.user.role !== "admin")
+//     return {
+//       success: false,
+//       message: "You are not authorized to make this request",
+//     };
+
+//   try {
+//     const [res] = await db
+//       .select()
+//       .from(products)
+//       .where(eq(products.id, productId));
+//     return res;
+//   } catch (error) {
+//     return {};
+//   }
 // }

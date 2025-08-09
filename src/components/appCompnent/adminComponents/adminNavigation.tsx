@@ -11,7 +11,7 @@ import {
   Settings,
   User,
 } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,7 +20,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
+} from "../../ui/dropdown-menu";
 import { signOut, useSession } from "@/lib/authClient";
 import {
   AlertDialog,
@@ -32,12 +32,12 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "../ui/alert-dialog";
-import { SetUserToAdminActions } from "@/app/actions/userActions";
+} from "../../ui/alert-dialog";
+import { SetUserToAdminActions } from "@/app/actions/userActions/userActions";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
+import { Input } from "../../ui/input";
+import { Button } from "../../ui/button";
 
 export default function AdminNavigation() {
   const { data: session, isPending } = useSession();
@@ -56,10 +56,10 @@ export default function AdminNavigation() {
     }
   };
   return (
-    <div className=" sticky top-0 left-0 right-0 flex items-center   justify-between  border-b-1 w-full gap-7 px-5 py-2 ml-10 ">
+    <div className=" sticky top-0 left-0 right-0 flex items-center   justify-end   w-full gap-7 px-5 py-2 ml-10 mt-4">
       {/* Search  */}
 
-      <div className=" gap-3 flex items-center border rounded-xl py-1 px-2 w-full max-w-[50%]">
+      {/* <div className=" gap-3 flex items-center border rounded-xl py-1 px-2 w-full max-w-[50%]">
         <input
           placeholder="Search here....."
           className=" border-0 focus:outline-0 w-full "
@@ -67,7 +67,7 @@ export default function AdminNavigation() {
         <Button variant={"ghost"} size={"icon"}>
           <Search />
         </Button>
-      </div>
+      </div> */}
       <div className="flex items-center gap-10  pr-10 ">
         {/* notificatin and messages */}
 

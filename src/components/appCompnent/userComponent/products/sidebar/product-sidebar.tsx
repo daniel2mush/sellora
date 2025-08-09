@@ -4,6 +4,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Settings2 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Sidebar } from "@/components/ui/sidebar";
+import Image from "next/image";
 
 const ContentOptions = [
   { display: "All Images", value: "" },
@@ -40,45 +42,59 @@ export default function ProductSideBar() {
   };
 
   return (
-    <div className="w-full border-r px-4 pt-6 h-full">
-      <div className="font-bold text-xl">
-        <h1 className="flex font-bold gap-4">
-          <Settings2 />
-          Filters
-        </h1>
-      </div>
-      <div className="mt-10">
-        {/* Content */}
-        <div className="space-y-4 border-y py-3">
-          <h1 className="font-bold text-[15px]">Content</h1>
-          <RadioGroup
-            value={contentType}
-            onValueChange={(value) => handleFilterChange("content", value)}>
-            {ContentOptions.map((option) => (
-              <div key={option.value} className="flex items-center gap-3">
-                <RadioGroupItem value={option.value} id={option.value} />
-                <Label className="text-muted-foreground" htmlFor={option.value}>
-                  {option.display}
-                </Label>
-              </div>
-            ))}
-          </RadioGroup>
+    <div>
+      <div className="px-5">
+        {/* <div className=" relative w-[60%] h-20 mb-5">
+          <Image
+            src={"/Logo.png"}
+            alt="Logo"
+            fill
+            className=" w-full h-auto object-contain"
+          />
+        </div> */}
+        <div className="font-bold text-xl  pt-10">
+          <h1 className="flex font-bold gap-4">
+            <Settings2 />
+            Filters
+          </h1>
         </div>
-        {/* License */}
-        <div className="space-y-4 border-y py-3">
-          <h1 className="font-bold text-[15px]">License Type</h1>
-          <RadioGroup
-            value={licenseType}
-            onValueChange={(value) => handleFilterChange("license", value)}>
-            {LicenseOptions.map((option) => (
-              <div key={option.value} className="flex items-center gap-3">
-                <RadioGroupItem value={option.value} id={option.value} />
-                <Label className="text-muted-foreground" htmlFor={option.value}>
-                  {option.display}
-                </Label>
-              </div>
-            ))}
-          </RadioGroup>
+        <div className="mt-10">
+          {/* Content */}
+          <div className="space-y-4 border-y py-3">
+            <h1 className="font-bold text-[15px]">Content</h1>
+            <RadioGroup
+              value={contentType}
+              onValueChange={(value) => handleFilterChange("content", value)}>
+              {ContentOptions.map((option) => (
+                <div key={option.value} className="flex items-center gap-3">
+                  <RadioGroupItem value={option.value} id={option.value} />
+                  <Label
+                    className="text-muted-foreground"
+                    htmlFor={option.value}>
+                    {option.display}
+                  </Label>
+                </div>
+              ))}
+            </RadioGroup>
+          </div>
+          {/* License */}
+          <div className="space-y-4 border-y py-3">
+            <h1 className="font-bold text-[15px]">License Type</h1>
+            <RadioGroup
+              value={licenseType}
+              onValueChange={(value) => handleFilterChange("license", value)}>
+              {LicenseOptions.map((option) => (
+                <div key={option.value} className="flex items-center gap-3">
+                  <RadioGroupItem value={option.value} id={option.value} />
+                  <Label
+                    className="text-muted-foreground"
+                    htmlFor={option.value}>
+                    {option.display}
+                  </Label>
+                </div>
+              ))}
+            </RadioGroup>
+          </div>
         </div>
       </div>
     </div>

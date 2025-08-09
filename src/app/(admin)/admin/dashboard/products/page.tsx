@@ -1,26 +1,10 @@
-import { getProductsActions } from "@/app/actions/productAction";
-import AdminProducts, {
-  productTypes,
-} from "@/components/appCompnent/adminComponents/productPage";
+import { getProductsActions } from "@/app/actions/admin/productAction";
+import AdminProducts from "@/components/appCompnent/adminComponents/adminProductPage";
 
-export default async function AdminProductDashboard({
-  searchParams,
-}: {
-  searchParams: Promise<{ isPublished: string }>;
-}) {
-  const value = await searchParams;
-
-  console.log((await value).isPublished, "Value");
-
-  let searchBool: boolean | undefined = undefined;
-  if (value.isPublished === "true") searchBool = true;
-  if (value.isPublished === "false") searchBool = false;
-
-  const Product = await getProductsActions(searchBool);
-
+export default async function AdminProductDashboard() {
   return (
     <div>
-      <AdminProducts products={Product as productTypes[]} />
+      <AdminProducts />
     </div>
   );
 }

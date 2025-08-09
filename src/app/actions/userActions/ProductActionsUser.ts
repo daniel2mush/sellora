@@ -1,3 +1,4 @@
+"use server";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import {
@@ -290,5 +291,18 @@ export async function GetAllPurchasedItems() {
       status: false,
       message: "Added to database successfully",
     };
+  }
+}
+
+export async function HasPurchasedHistory(productId: string) {
+  try {
+    const res = await db
+      .select()
+      .from(purchaseItems)
+      .where(eq(purchaseItems.productId, productId));
+
+    return res.length > 0;
+  } catch (error) {
+    return false;
   }
 }

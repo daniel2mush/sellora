@@ -22,10 +22,12 @@ export default async function Orders() {
 
       {/* Content */}
       {res!.map(({ products, purchase, purchaseItems }) => (
-        <div className=" mb-6 flex justify-between items-center  gap-3">
+        <div
+          key={products.id}
+          className=" mb-6 flex justify-between items-center  gap-3">
           <div className=" flex items-center gap-4">
             {/* Image */}
-            <div className=" relative w-[100px] h-[50px]  rounded overflow-hidden">
+            <div className=" relative w-[200px] h-[150px]  rounded overflow-hidden">
               <Image
                 src={products.thumbnail as string}
                 alt={products.title}
@@ -41,25 +43,27 @@ export default async function Orders() {
           </div>
 
           {/* Buttons */}
-          <div className=" flex items-center justify-center gap-3 ">
+          <div className=" flex items-center justify-center gap-3  ">
             <div>
-              <Button
-                size={"icon"}
+              <button
                 type="submit"
-                className=" cursor-pointer bg-green-600 w-full">
+                className=" cursor-pointer bg-green-600 w-full rounded text-white">
                 <a
                   href={`/api/download/${products.id}`}
                   target="_blank"
                   download
                   className="flex items-center gap-1.5 ">
-                  <div className=" p-3">Download</div>
+                  <div className=" py-2 px-5 flex items-center justify-center gap-3 ">
+                    {" "}
+                    <Download size={15} /> Download
+                  </div>
                 </a>
-              </Button>
+              </button>
             </div>
 
             <Link
               href={`/invoice/${purchase.id}`}
-              className=" flex justify-center items-center w-[50%] gap-3  border rounded p-1">
+              className=" flex justify-center items-center w-[50%] gap-3 py-2 px-5  border rounded p-1">
               <FileText />
               Invoice
             </Link>

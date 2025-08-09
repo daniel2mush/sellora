@@ -1,5 +1,5 @@
-import AdminNavigation from "@/components/appCompnent/adminNavigation";
-import AppSideBar from "@/components/appCompnent/app-sidebar";
+import AdminSideBar from "@/components/appCompnent/adminComponents/admin-sidebar";
+import AdminNavigation from "@/components/appCompnent/adminComponents/adminNavigation";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
 import { auth } from "@/lib/auth";
@@ -20,7 +20,7 @@ export default async function AdminLayout({
   return (
     <section>
       <SidebarProvider>
-        <AppSideBar />
+        <AdminSideBar />
         <div className=" w-full">
           <div className=" flex items-center ">
             {" "}

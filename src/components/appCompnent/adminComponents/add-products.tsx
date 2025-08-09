@@ -1,8 +1,6 @@
-import { getSignature } from "@/app/actions/cloudinary";
-import {
-  addNewProductAction,
-  EditProductAction,
-} from "@/app/actions/productAction";
+"use client";
+import { getSignature } from "@/app/actions/cloudinary/cloudinary";
+import { addNewProductAction } from "@/app/actions/admin/productAction";
 import { Button } from "@/components/ui/button";
 import { DialogClose, DialogFooter } from "@/components/ui/dialog";
 import {
@@ -19,7 +17,7 @@ import axios from "axios";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import z from "zod";
+import z, { success } from "zod";
 
 type productTypes = {
   id: string;
@@ -44,13 +42,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  useAddAdminProducts,
+  useUpdate,
+} from "@/lib/utils/admin/adminQueryFun";
 
 export default function AddProductForm({ setOpen, products }: AddProductProps) {
+  const { mutate, data, isPending, isSuccess } = useAddAdminProducts();
+
   const [thumbnailUploadProgress, setThumbnailUploadProgress] = useState(0);
   const [assetUploadProgress, setAssetUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
   const [value, setValue] = useState(0.0);
   const closeref = useRef(null);
+
+  const { mutateAsync } = useUpdate();
 
   // File schemas
   const ThumbnailSchema = z
@@ -153,15 +159,20 @@ export default function AddProductForm({ setOpen, products }: AddProductProps) {
         DataBaseFormData.append("assetSize", assets.bytes.toString());
         DataBaseFormData.append("category", data.category);
 
-        const { message, success } = await addNewProductAction(
-          DataBaseFormData
-        );
-        if (success) {
-          toast.success(message);
-          setOpen();
-          return;
-        }
-        toast.error(message);
+        // const { message, success } = await addNewProductAction(
+        //   DataBaseFormData
+        // );
+
+        // if (success) {
+        //   setOpen();
+        //   return;
+        // }
+        // toast.error(message);
+
+        mutate(DataBaseFormData);
+
+        setOpen();
+        toast.success("Product added successfully");
       }
     } catch (error) {
       console.log(error);
@@ -182,23 +193,25 @@ export default function AddProductForm({ setOpen, products }: AddProductProps) {
       secure_url: string;
       bytes: number;
     };
-    const thumbnail = (await UploadThumbnailToCloudinary(
-      data.thumbnail!,
-      data.title
-    )) as clodinaryTypes;
+    const thumbnail: any = data.thumbnail
+      ? ((await UploadThumbnailToCloudinary(
+          data.thumbnail!,
+          data.title
+        )) as clodinaryTypes)
+      : "";
 
     console.log(thumbnail.secure_url, "Thumbnail, front end");
 
+    console.log("Code got to this point ");
+
     try {
-      const { message, success } = await EditProductAction(
-        products?.id as string,
-        {
-          title: data.title,
-          description: data.description,
-          price: parsed.price,
-          thumbnailUrl: thumbnail.secure_url,
-        }
-      );
+      const { success, message } = await mutateAsync({
+        productId: products?.id as string,
+        title: data.title,
+        description: data.description,
+        price: parsed.price,
+        thumbnailUrl: thumbnail.secure_url,
+      });
 
       if (success) {
         toast.success(message);
