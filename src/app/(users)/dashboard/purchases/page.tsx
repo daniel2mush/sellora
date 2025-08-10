@@ -38,7 +38,9 @@ export default async function Orders() {
             {/* Product title and price */}
             <div>
               <h1 className=" ">{products.title}</h1>
-              <p className=" font-bold">${purchaseItems.price}</p>
+              <p className=" font-bold">
+                ${(purchaseItems.price / 100).toFixed(2)}
+              </p>
             </div>
           </div>
 

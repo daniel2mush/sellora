@@ -8,7 +8,7 @@ import {
 export function AccordionSection() {
   return (
     <div className="px-10  py-10 mt-10">
-      <h1 className="text-4xl font-bold font-stretch-90% text-center mb-6">
+      <h1 className="text-3xl font-bold font-stretch-90% text-center mb-6">
         Frequently Asked Questions
       </h1>
 

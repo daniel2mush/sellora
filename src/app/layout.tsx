@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Toaster } from "sonner";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { Providers } from "@/components/providers/provider";
 import { NavigationWrapper } from "@/components/appCompnent/userComponent/navigation/navigationWrapper";
+import dynamic from "next/dynamic";
+import ClientToaster from "@/components/appCompnent/ClientToaster";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,13 +34,13 @@ export default async function RootLayout({
 
   const isUser = session?.user.role !== "admin";
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <NavigationWrapper>
           <Providers>{children}</Providers>
         </NavigationWrapper>
-        <Toaster richColors />
+        <ClientToaster />
       </body>
     </html>
   );

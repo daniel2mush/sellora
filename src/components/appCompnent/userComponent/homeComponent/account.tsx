@@ -11,8 +11,8 @@ export function CreateAnAccount() {
       }}
       className=" relative w-full h-[350px] flex items-center justify-center    overflow-hidden">
       {/* Content */}
-      <div className=" z-50 text-white flex flex-col items-center justify-center space-y-5">
-        <h1 className=" text-4xl md:text-5xl font-black  ">
+      <div className=" z-40 text-white flex flex-col items-center justify-center space-y-5">
+        <h1 className=" text-3xl md:text-5xl font-black  ">
           Create a Free Account
         </h1>
         <p className=" text-balance text-center text-[20px] font-medium ">

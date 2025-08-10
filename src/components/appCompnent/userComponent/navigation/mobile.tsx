@@ -1,26 +1,33 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
-import { DollarSign, FolderHeart, Home, Menu, Compass, X } from "lucide-react";
-// Changed Shapes → Compass for "Explore"
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { Compass, DollarSign, FolderHeart, Home, Menu, X } from "lucide-react";
 import Image from "next/image";
-import MoreOption from "../more/MoreOption";
-import { useState } from "react";
 import { useSession } from "@/lib/authClient";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { DialogTitle } from "@/components/ui/dialog";
+import UserMenu from "../more/MoreOption";
 
 export default function MobileNavigation() {
-  const [open, setOpen] = useState(false);
   const { data: session } = useSession();
+  const pathname = usePathname();
 
   const navMenu = [
-    {
-      name: "Home",
-      path: "/",
-      icon: <Home size={18} />, // Slightly bigger for better tap targets
-    },
+    { name: "Home", path: "/", icon: <Home className="h-5 w-5" /> },
     {
       name: "Explore",
       path: "/products",
-      icon: <Compass size={18} />, // More universal for "discover/browse"
+      icon: <Compass className="h-5 w-5" />,
     },
   ];
 
@@ -28,85 +35,106 @@ export default function MobileNavigation() {
     {
       name: "Purchases",
       path: "/dashboard/purchases",
-      icon: <DollarSign size={18} />,
+      icon: <DollarSign className="h-5 w-5" />,
     },
     {
       name: "Collections",
       path: "/dashboard/collection",
-      icon: <FolderHeart size={18} />, // Suggests saved items/favorites
+      icon: <FolderHeart className="h-5 w-5" />,
     },
   ];
 
-  return (
-    <div className="sticky top-0 z-50 bg-white">
-      {/* Trigger */}
-      <div className="flex items-center justify-between px-5 py-5 border-b border-gray-100">
-        <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={() => setOpen(true)}>
-            <Menu />
-          </Button>
-          <div className="relative w-28 h-10">
-            <Image src="/Logo.png" alt="Logo" fill className="object-contain" />
-          </div>
-        </div>
-        <MoreOption />
-      </div>
+  const lastScrollY = useRef(0);
+  const [show, setShow] = useState(true);
 
-      {/* Sidebar */}
-      {open && (
-        <div
-          onClick={() => setOpen(false)}
-          className="absolute inset-0 z-50 h-screen bg-black/20">
-          <div
-            onClick={(e) => e.stopPropagation()} // Prevent click closing when inside menu
-            className="h-screen w-60 bg-white pt-5 px-5 shadow-lg">
-            {/* Logo */}
-            <div className=" flex justify-between items-center">
-              <div className="relative w-28 h-10 mb-4">
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      if (currentScrollY > lastScrollY.current) {
+        setShow(false);
+      } else {
+        setShow(true);
+      }
+      lastScrollY.current = currentScrollY;
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  if (pathname === "/auth") {
+    return null;
+  }
+
+  return (
+    <header
+      className={`sticky top-0 z-50 bg-background shadow-md transition-all duration-300 ease-in-out ${
+        show ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"
+      }`}>
+      <div className="container mx-auto flex items-center justify-between px-4 py-3">
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button variant="ghost" size="icon" aria-label="Open menu">
+              <Menu className="h-6 w-6" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="w-64">
+            <SheetHeader className="mb-6">
+              <DialogTitle className="sr-only">
+                Main navigation menu
+              </DialogTitle>
+              <div className="relative w-32 h-10">
                 <Image
                   src="/Logo.png"
                   alt="Logo"
                   fill
                   className="object-contain"
+                  priority
                 />
               </div>
-              <Button onClick={() => setOpen(false)} variant={"ghost"}>
-                {" "}
-                <X size={18} />
-              </Button>
-            </div>
-
-            {/* Menu Options */}
-            <nav>
-              {navMenu.map((n) => (
-                <Link
-                  onClick={() => setOpen(false)}
-                  key={n.path}
-                  href={n.path}
-                  className="py-2 flex gap-3 items-center hover:bg-gray-100 px-3 rounded-md transition">
-                  {n.icon}
-                  <span>{n.name}</span>
-                </Link>
+            </SheetHeader>
+            <nav className="flex flex-col space-y-2">
+              {navMenu.map((item) => (
+                <SheetClose key={item.path} asChild>
+                  <Link
+                    href={item.path}
+                    className="flex items-center gap-3 px-4 py-3 text-sm font-medium hover:bg-accent rounded-md transition-colors">
+                    {item.icon}
+                    {item.name}
+                  </Link>
+                </SheetClose>
               ))}
-
               {session?.user && (
-                <div className="mt-4 border-t border-gray-200 pt-2">
-                  {navSession.map((n) => (
-                    <Link
-                      onClick={() => setOpen(false)}
-                      key={n.path}
-                      href={n.path}
-                      className="py-2 flex gap-3 items-center hover:bg-gray-100 px-3 rounded-md transition">
-                      {n.icon}
-                      <span>{n.name}</span>
-                    </Link>
+                <>
+                  <div className="my-4 border-t border-border" />
+                  {navSession.map((item) => (
+                    <SheetClose key={item.path} asChild>
+                      <Link
+                        href={item.path}
+                        className="flex items-center gap-3 px-4 py-3 text-sm font-medium hover:bg-accent rounded-md transition-colors">
+                        {item.icon}
+                        {item.name}
+                      </Link>
+                    </SheetClose>
                   ))}
-                </div>
+                </>
               )}
             </nav>
-          </div>
-        </div>
-      )}
-    </div>
+          </SheetContent>
+        </Sheet>
+
+        <Link href="/" className="relative w-28 h-8">
+          <Image
+            src="/Logo.png"
+            alt="Logo"
+            fill
+            className="object-contain"
+            priority
+          />
+        </Link>
+
+        <UserMenu />
+      </div>
+    </header>
   );
 }

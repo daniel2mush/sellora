@@ -1,25 +1,11 @@
-import SidebarWrapper from "@/components/appCompnent/userComponent/products/sidebar/SidebarWrapper";
-import { ProductPage } from "@/components/appCompnent/userComponent/products/productPage";
-import {
-  GetAllProductsActions,
-  LicenseType,
-  searchQueryProps,
-} from "../actions/userActions/ProductActionsUser";
-import { productWithUser } from "@/lib/types/productTypes";
+import { UserProducts } from "@/components/appCompnent/userComponent/products/productPage";
+import ProductHeader from "@/components/appCompnent/userComponent/products/product-header/productHeader";
 
-export default async function Products({
-  searchParams,
-}: {
-  searchParams: Promise<{
-    content?: string;
-    query?: string;
-    page?: string;
-    license?: string;
-  }>;
-}) {
+export default async function Products() {
   return (
-    <SidebarWrapper>
-      <ProductPage />
-    </SidebarWrapper>
+    <div>
+      <ProductHeader />
+      <UserProducts />
+    </div>
   );
 }

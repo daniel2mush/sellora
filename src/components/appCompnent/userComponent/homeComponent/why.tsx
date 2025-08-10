@@ -4,7 +4,7 @@ export default function WhyUs() {
   return (
     <div className=" min-h-screen flex items-center justify-center">
       <div>
-        <h1 className="text-4xl font-bold font-stretch-90% text-center mb-6">
+        <h1 className="text-3xl font-bold font-stretch-90% text-center mb-6">
           Why us
         </h1>
         {/* content */}

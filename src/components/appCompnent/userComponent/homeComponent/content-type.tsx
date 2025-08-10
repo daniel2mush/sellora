@@ -29,8 +29,8 @@ export default function ContentType() {
       <div className=" w-full px-14 space-y-14">
         {/* Heading */}
         <div>
-          <h1 className=" text-4xl font-stretch-90%  font-bold text-center">
-            Browse by Content Type
+          <h1 className=" text-3xl font-stretch-90%  font-bold text-center">
+            Browse Content
           </h1>
         </div>
         {/* Grids */}

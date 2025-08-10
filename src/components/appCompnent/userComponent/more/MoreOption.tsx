@@ -10,81 +10,124 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogOutIcon } from "lucide-react";
-import { AlertDialogFun } from "../navigation/desktop";
+import { Compass, DollarSign, FolderHeart, LogOut, User } from "lucide-react";
 import { signOut, useSession } from "@/lib/authClient";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
+import { Skeleton } from "@/components/ui/skeleton";
+import { BecomeSellerDialog } from "../../SellerDialog/SellerDialog";
+import { useState } from "react";
 
-export default function MoreOption() {
+export default function UserMenu() {
   const router = useRouter();
   const { data: session, isPending } = useSession();
+  const [open, setOpen] = useState(false);
+
   const handleLogout = async () => {
     try {
-      const data = await signOut();
-      if (data.data?.success) {
-        toast.success("Logged out sucessfully");
+      const { data, error } = await signOut();
+      if (data?.success) {
+        toast.success("Logged out successfully");
         router.refresh();
-        return;
+      } else {
+        toast.error(error?.message || "Logout failed");
       }
-      toast.error(data.error?.message);
     } catch (e) {
-      console.log(e);
+      console.error(e);
+      toast.error("An unexpected error occurred");
     }
   };
 
+  if (isPending) {
+    return <Skeleton className="h-10 w-10 rounded-full" />;
+  }
+
+  if (!session?.user) {
+    return (
+      <Button variant="default" asChild>
+        <Link href="/auth">Login</Link>
+      </Button>
+    );
+  }
+
   return (
-    <div>
-      {isPending ? (
-        <div />
-      ) : session?.user ? (
-        <DropdownMenu>
-          <DropdownMenuTrigger>
-            <Avatar>
-              <AvatarFallback className=" bg-amber-700 text-white">
-                {session.user.name.charAt(0)}
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="ghost"
+            className="relative h-10 w-10 rounded-full p-0">
+            <Avatar className="h-10 w-10">
+              <AvatarImage
+                src={session.user.image as string}
+                alt={session.user.name}
+              />
+              <AvatarFallback className="bg-amber-700 text-white">
+                {session.user.name.charAt(0).toUpperCase()}
               </AvatarFallback>
-              <AvatarImage src={session.user?.image as string} alt="profile" />
             </Avatar>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className=" w-56" align="end">
-            <DropdownMenuLabel>
-              <h1 className=" font-bold">{session.user.name}</h1>
-              <p className=" text-sm text-muted-foreground">
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="w-56" align="end" forceMount>
+          <DropdownMenuLabel className="font-normal">
+            <div className="flex flex-col space-y-1">
+              <p className="text-sm font-medium leading-none">
+                {session.user.name}
+              </p>
+              <p className="text-xs leading-none text-muted-foreground">
                 {session.user.email}
               </p>
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
+            </div>
+          </DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup>
+            <DropdownMenuItem asChild>
+              <Link href="/profile">
+                <User className="mr-2 h-4 w-4" />
+                <span>Profile</span>
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/products">
+                <Compass className="mr-2 h-4 w-4" />
+                <span>Explore</span>
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/dashboard/purchases">
+                <DollarSign className="mr-2 h-4 w-4" />
+                <span>Purchases</span>
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/dashboard/collection">
+                <FolderHeart className="mr-2 h-4 w-4" />
+                <span>Collections</span>
+              </Link>
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => setOpen(true)} className="p-0">
+            <User className="mr-2 h-4 w-4" />
+            <span>Become a Seller</span>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={handleLogout}>
+            <LogOut className="mr-2 h-4 w-4" />
+            <span>Logout</span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
 
-            <DropdownMenuGroup>
-              <DropdownMenuItem>Explore</DropdownMenuItem>
-              <DropdownMenuItem>My Orders</DropdownMenuItem>
-              <DropdownMenuItem>Downloads</DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenu>
-              <DropdownMenuItem>
-                <AlertDialogFun userId={session.user.id} />
-              </DropdownMenuItem>
-            </DropdownMenu>
-            <DropdownMenuSeparator />
-
-            <DropdownMenuGroup>
-              <DropdownMenuItem onClick={() => handleLogout()}>
-                <LogOutIcon />
-                Logout
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      ) : (
-        <Button className=" font-bold cursor-pointer">
-          {" "}
-          <Link href={"/auth"}>Login</Link>
-        </Button>
+      {open && (
+        <BecomeSellerDialog
+          userId={session.user.id}
+          open={open}
+          setOpen={() => setOpen((p) => !p)}
+        />
       )}
-    </div>
+    </>
   );
 }

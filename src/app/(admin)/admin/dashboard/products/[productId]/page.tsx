@@ -12,7 +12,6 @@ import { auth } from "@/lib/auth";
 import { productWithUser } from "@/lib/types/productTypes";
 import { AvatarImage } from "@radix-ui/react-avatar";
 import axios from "axios";
-import { promises } from "dns";
 import {
   CircleAlert,
   Download,
@@ -40,9 +39,7 @@ export default async function ProductDetails({
 }) {
   const id = (await params).productId;
   const product = (await GetSingleProductActions(id)) as productWithUser;
-
   if (!product) return notFound();
-
   const { error, success, cancelled } = await searchParams;
 
   const { count } = await GetUserUploadsAction(product.user.id);
@@ -90,190 +87,211 @@ export default async function ProductDetails({
   }
 
   return (
-    <div className="">
-      {/* Error handeling for purchases */}
-      {success && (
-        <div className=" w-full p-4 text-center text-white bg-green-400 flex justify-center items-center gap-2 ">
-          <CircleAlert />
-          <h1>Asset purchase successful</h1>
-        </div>
-      )}
-      {cancelled && (
-        <div className=" w-full p-4 text-center text-white bg-red-400 flex justify-center items-center gap-2 ">
-          <CircleAlert />
-          <h1>Purchase cancelled</h1>
-        </div>
-      )}
-      {error && (
-        <div className=" w-full p-4 text-center text-white bg-red-400 flex justify-center items-center gap-2 ">
-          <CircleAlert />
-          <h1>Payment failed, please try again</h1>
-        </div>
-      )}
-      {/* Grid */}
-      <div className=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 pt-6">
-        {/* Grid one */}
-        <div className=" lg:col-span-2  w-full bg-gray-50 p-5 ">
-          <div className=" relative h-[80vh] ">
-            <Image
-              src={product.products.thumbnailUrl as string}
-              alt={product.products.title}
-              fill
-              className=" object-contain"
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+      {(success || error || cancelled) && (
+        <div className="sticky top-0 z-30">
+          {success && (
+            <Banner variant="success" message="Asset purchase successful" />
+          )}
+          {cancelled && <Banner variant="warn" message="Purchase cancelled" />}
+          {error && (
+            <Banner
+              variant="error"
+              message="Payment failed, please try again"
             />
-          </div>
-          <div>
-            <h1 className=" text-center font-bold text-gray-400 ">
+          )}
+        </div>
+      )}
+      {/* Main Grid */}
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Product Image Section */}
+          <div className="lg:col-span-2">
+            <div className="relative h-[60vh] md:h-[80vh] rounded-2xl overflow-hidden  bg-white">
+              <Image
+                src={product.products.thumbnailUrl as string}
+                alt={product.products.title}
+                fill
+                className="object-contain p-4 rounded transition-transform duration-300 hover:scale-105"
+              />
+            </div>
+            <h1 className="mt-4 text-center text-2xl font-semibold text-gray-800">
               {product.products.title}
             </h1>
           </div>
-        </div>
-        {/* Grid 2 */}
-        <div className=" h-full place-items-center py-[10vh] ">
-          <div className=" w-[90%] space-y-5">
-            {/* Profile */}
-            <div className=" flex justify-between items-center gap-4">
-              <div className=" flex items-center gap-6">
-                <Avatar className=" w-10 h-10">
-                  <AvatarFallback>{product.user.name.charAt(0)}</AvatarFallback>
+
+          {/* Sidebar Section */}
+          <div className="lg:sticky lg:top-20 self-start bg-white rounded-2xl shadow-lg p-6 space-y-6">
+            {/* Author Profile */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <Avatar className="w-12 h-12 ring-2 ring-gray-200">
                   <AvatarImage
                     src={product.user.image as string}
                     alt={product.user.name}
                   />
+                  <AvatarFallback>{product.user.name.charAt(0)}</AvatarFallback>
                 </Avatar>
-
                 <div>
-                  <h1 className=" font-bold">{product.user.name}</h1>
-                  {/* Total uploads */}
-                  <p className=" text-sm text-muted-foreground">
-                    {count} Resources
-                  </p>
+                  <h2 className="font-semibold text-lg text-gray-900">
+                    {product.user.name}
+                  </h2>
+                  <p className="text-sm text-gray-500">{count} Resources</p>
                 </div>
               </div>
-              {/* Follow button */}
-              <button className=" aspect-square bg-gray-100 p-2 rounded cursor-pointer hover:bg-gray-200">
-                <div className=" flex flex-col justify-center items-center">
-                  <UserPlus size={18} strokeWidth={3} />
-                  <h1 className=" text-sm font-bold">Follow</h1>
-                </div>
-              </button>
+              <Button
+                variant="ghost"
+                className="hover:bg-gray-100 transition-colors">
+                <UserPlus size={20} className="mr-2" />
+                Follow
+              </Button>
             </div>
 
-            {/* Download button */}
-
-            <div>
+            {/* Action Buttons */}
+            <div className="space-y-4">
               {isLoggedIn ? (
                 isAlreadyPurchased ? (
-                  <div className=" place-items-center">
-                    <form className=" w-full">
-                      <Button
-                        type="submit"
-                        className=" cursor-pointer bg-green-600 w-full">
-                        <a
-                          href={`/api/download/${id}`}
-                          target="_blank"
-                          download
-                          className="flex items-center gap-1.5 ">
-                          <Download />
-                          Download now
-                        </a>
-                      </Button>
-                    </form>
-
-                    <Link
-                      href={`/invoice/${res?.purchase.id}`}
-                      className=" flex justify-center items-center w-[50%] gap-3 mt-4 border rounded p-1">
-                      <FileText />
-                      Invoice
-                    </Link>
-                  </div>
-                ) : isAuthor ? (
-                  <div className=" text-center">
-                    <h1 className="font-bold text-xl">You own this asset</h1>
-                    <p>You cannot buy your own asset</p>
-                  </div>
-                ) : isFree ? (
-                  <Button className=" w-full h-16">
-                    <div className=" w-full py-10 cursor-pointer  ">
+                  <>
+                    <Button
+                      asChild
+                      className="w-full h-12 bg-green-600 hover:bg-green-700 text-white font-bold text-lg">
                       <a
-                        href={`/api/download/free/${id}`}
+                        href={`/api/download/${id}`}
                         target="_blank"
                         download
-                        className="flex items-center gap-1.5 text-center justify-center font-bold text-xl ">
-                        <Download />
-                        Download now
-                      </a>{" "}
-                      <p className=" text-sm text-muted-foreground">
+                        className="flex items-center justify-center gap-2">
+                        <Download size={20} />
+                        Download Now
+                      </a>
+                    </Button>
+                    <Button
+                      asChild
+                      variant="outline"
+                      className="w-full border-gray-300 hover:bg-gray-50">
+                      <Link
+                        href={`/invoice/${res?.purchase.id}`}
+                        className="flex items-center justify-center gap-2">
+                        <FileText size={20} />
+                        View Invoice
+                      </Link>
+                    </Button>
+                  </>
+                ) : isAuthor ? (
+                  <div className="text-center p-4 bg-gray-100 rounded-lg">
+                    <h2 className="font-semibold text-xl text-gray-800">
+                      You Own This Asset
+                    </h2>
+                    <p className="text-sm text-gray-500">
+                      You cannot purchase your own product.
+                    </p>
+                  </div>
+                ) : isFree ? (
+                  <Button
+                    asChild
+                    className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg">
+                    <a
+                      href={`/api/download/free/${id}`}
+                      target="_blank"
+                      download
+                      className="flex flex-col items-center justify-center">
+                      <div className="flex items-center gap-2">
+                        <Download size={20} />
+                        Download Now
+                      </div>
+                      <p className="text-xs text-blue-100">
                         Attribution required
                       </p>
-                    </div>
+                    </a>
                   </Button>
                 ) : (
-                  <div className=" space-y-5">
-                    {/* Product price */}
-                    <div className=" text-center">
-                      <h1 className=" font-bold text-5xl">
+                  <div className="space-y-4">
+                    <div className="text-center">
+                      <h2 className="text-4xl font-bold text-gray-900">
                         ${(product.products.price / 100).toFixed(2)}
-                      </h1>
+                      </h2>
                     </div>
-                    {/* Pay with paypal */}
-                    <form action={handlePaypal}>
-                      <Button variant={"outline"} className=" h-10 w-full p-4">
-                        <div className=" relative h-6 w-full ">
+                    <form action={handlePaypal} className="w-full">
+                      <Button
+                        type="submit"
+                        variant="outline"
+                        className="w-full h-12 border-2 border-blue-500 hover:bg-blue-50">
+                        <div className="relative h-6 w-24">
                           <Image
-                            src={"/payment/paypal.png"}
-                            alt="paypal"
+                            src="/payment/paypal.png"
+                            alt="PayPal"
                             fill
-                            className="
-                         object-contain
-                        "
+                            className="object-contain"
                           />
                         </div>
                       </Button>
                     </form>
-                    {/* Pay with orange money */}
-
                     <Button
-                      variant={"outline"}
-                      className=" h-10 w-full p-4 overflow-hidden">
-                      <div className=" relative h-20 w-full overflow-hidden ">
+                      variant="outline"
+                      className="w-full h-12 border-2 border-orange-500 hover:bg-orange-50">
+                      <div className="relative h-28 w-24">
                         <Image
-                          src={"/payment/orangeMoney.png"}
-                          alt="paypal"
+                          src="/payment/orangeMoney.png"
+                          alt="Orange Money"
                           fill
-                          className="
-                         object-contain
-                        "
+                          className="object-contain"
                         />
                       </div>
                     </Button>
                   </div>
                 )
               ) : (
-                <Button className=" w-full h-14">
-                  <Link href={"/auth"} className=" font-bold text-2xl">
-                    Log in to download
-                  </Link>
+                <Button
+                  asChild
+                  className="w-full h-12 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-lg">
+                  <Link href="/auth">Log In to Download</Link>
                 </Button>
               )}
             </div>
 
-            {/* Share and add to collection button */}
+            {/* Share and Collection Buttons */}
             {isLoggedIn && (
-              <div className=" grid grid-cols-2 gap-4">
-                <Button variant={"ghost"} className=" cursor-pointer">
-                  <Shapes size={18} />
-                  <h1 className=" text-sm font-medium">Collections</h1>
+              <div className="grid grid-cols-2 gap-4">
+                <Button
+                  variant="ghost"
+                  className="hover:bg-gray-100 transition-colors">
+                  <Shapes size={20} className="mr-2" />
+                  Add to Collection
                 </Button>
-                <Button variant={"ghost"} className=" cursor-pointer">
-                  <Share size={18} />
-                  <h1 className=" text-sm font-medium">Share</h1>
+                <Button
+                  variant="ghost"
+                  className="hover:bg-gray-100 transition-colors">
+                  <Share size={20} className="mr-2" />
+                  Share
                 </Button>
               </div>
             )}
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function Banner({
+  variant,
+  message,
+}: {
+  variant: "success" | "warn" | "error";
+  message: string;
+}) {
+  const styles =
+    variant === "success"
+      ? "bg-emerald-500"
+      : variant === "warn"
+      ? "bg-amber-500"
+      : "bg-rose-500";
+  return (
+    <div
+      className={`${styles} flex items-center justify-center gap-2 px-4 py-3 text-white`}
+      role="status"
+      aria-live="polite">
+      <CircleAlert className="h-5 w-5" />
+      <p className="text-sm font-medium">{message}</p>
     </div>
   );
 }

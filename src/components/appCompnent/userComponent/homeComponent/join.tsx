@@ -35,7 +35,7 @@ export default function JoinToday() {
         {/* Second div */}
         <div className=" mt-10 lg:mt-0 lg:pl-10 ">
           <div>
-            <h1 className="text-4xl font-bold  mb-6">
+            <h1 className="text-3xl font-bold  mb-6">
               {" "}
               Join Sellora pro Today
             </h1>

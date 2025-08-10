@@ -11,7 +11,7 @@ const images = Array.from({ length: 8 }, (_, i) => ({
 export default function Trending() {
   return (
     <div className="px-4 md:px-10 my-10  ">
-      <h1 className="text-4xl font-bold font-stretch-90% text-center mb-6">
+      <h1 className="text-3xl font-bold font-stretch-90% text-center mb-6">
         Trending Images!
       </h1>
 

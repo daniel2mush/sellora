@@ -29,7 +29,7 @@ interface productPageProps {
   paginationData: paginationData;
 }
 
-export function ProductPage() {
+export function UserProducts() {
   const searchParams = useSearchParams();
   const searchString = searchParams.toString();
 
@@ -92,35 +92,9 @@ export function ProductPage() {
 
   return (
     <div className="px-4 md:px-10 w-full pt-10">
-      <h1 className="text-4xl font-bold text-center mb-10">
+      {/* <h1 className="text-4xl font-bold text-center mb-10">
         Explore our products
-      </h1>
-
-      {/* Search Bar */}
-      <div className="py-5 rounded-xl w-full px-10 my-10 flex items-center justify-center border">
-        <input
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              const currentParams = new URLSearchParams(
-                searchParams.toString()
-              );
-              currentParams.set("page", "1");
-              if (query) {
-                currentParams.set("query", query);
-              } else {
-                currentParams.delete("query");
-              }
-              router.replace(`?${currentParams.toString()}`);
-            }
-          }}
-          placeholder="Search your items..."
-          className="w-full placeholder:font-semibold active:outline-none focus:outline-none"
-        />
-        <Search size={18} />
-      </div>
+      </h1> */}
 
       {/* Masonry Grid */}
       <MasonryGrid searchQuery={searchValue as string} products={products} />

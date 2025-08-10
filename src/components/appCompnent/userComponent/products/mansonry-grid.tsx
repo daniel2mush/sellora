@@ -5,8 +5,15 @@ import Image from "next/image";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { productWithUser } from "@/lib/types/productTypes";
-import { Download, Shapes } from "lucide-react";
+import { Download, Shapes, Heart } from "lucide-react"; // Added Heart for like button
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"; // Added for tooltips
+import { cn } from "@/lib/utils"; // Assuming cn utility for conditional classes
 
 export default function MasonryGrid({
   products,
@@ -20,62 +27,96 @@ export default function MasonryGrid({
     .join(",")}`;
 
   return (
-    <div className="w-full">
+    <div className="w-full p-4 bg-gray-50">
+      {" "}
+      {/* Added light background and padding */}
       <Masonry
         key={masonryKey}
         items={products}
         columnWidth={300}
         columnGutter={16}
         render={({ data }) => (
-          <div className="w-full relative group rounded-lg overflow-hidden shadow-lg transition-transform duration-300 hover:scale-105">
-            <img
-              src={data.products.thumbnailUrl ?? ""}
+          <div className="w-full relative group rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 bg-white">
+            <Image
+              src={data.products.thumbnailUrl ?? "/placeholder-image.png"} // Fallback image
               alt={data.products.title}
-              className="w-full h-auto object-contain group-hover:scale-110 transition-all duration-500"
+              width={300}
+              height={400} // Adjusted for better aspect ratio control
+              className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500 ease-in-out"
               loading="lazy"
             />
-            {data.products.price === 0 && (
-              <div className="absolute top-2 right-2">
-                <Badge variant={"secondary"}>Free</Badge>
-              </div>
-            )}
+            <div className="absolute top-3 right-3">
+              {data.products.price === 0 ? (
+                <Badge className="bg-green-500 text-white px-3 py-1 text-sm font-semibold shadow-md">
+                  Free
+                </Badge>
+              ) : (
+                <Badge className="bg-indigo-500 text-white px-3 py-1 text-sm font-semibold shadow-md">
+                  ${(data.products.price / 100).toFixed(2)}
+                </Badge>
+              )}
+            </div>
             <Link href={`/products/${data.products.id}`}>
-              <div className="opacity-0 group-hover:opacity-100 absolute top-0 right-0 left-0 bg-black/30 w-full h-full px-5 transition-opacity duration-300">
-                <div className="h-full flex flex-col justify-end space-y-2 pb-4 text-white">
-                  <h1 className="text-lg font-semibold">
-                    {data.products.title}
-                  </h1>
-                  <div className="flex items-center gap-4">
-                    <div className="overflow-hidden rounded-full h-8 w-8 relative">
-                      <Image
-                        src={data.user.image as string}
-                        alt={data.user.name}
-                        fill
-                        loading="lazy"
-                      />
-                    </div>
-                    <h1 className="text-sm">By {data.user.name}</h1>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-5 text-white">
+                <h1 className="text-xl font-bold leading-tight mb-1">
+                  {data.products.title}
+                </h1>
+                <div className="flex items-center gap-3">
+                  <div className="overflow-hidden rounded-full h-7 w-7 relative ring-2 ring-white/50">
+                    <Image
+                      src={data.user.image as string}
+                      alt={data.user.name}
+                      fill
+                      className="object-cover"
+                      loading="lazy"
+                    />
                   </div>
+                  <p className="text-sm font-medium">By {data.user.name}</p>
                 </div>
               </div>
             </Link>
-            {/* Action Buttons */}
-            <div className="absolute top-2 left-2 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <Button
-                className="bg-white text-gray-800 hover:bg-gray-100 cursor-pointer"
-                size="icon"
-                onClick={() => console.log("Download", data.products.id)}>
-                <Download size={20} />
-              </Button>
-              <Button
-                className="bg-white text-gray-800 hover:bg-gray-100 cursor-pointer"
-                size="icon"
-                onClick={() =>
-                  console.log("Add to Collection", data.products.id)
-                }>
-                <Shapes size={20} />
-              </Button>
-            </div>
+            {/* Action Buttons with Tooltips */}
+            <TooltipProvider>
+              <div className="absolute top-3 left-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      className="bg-white/90 text-gray-800 hover:bg-white/100 hover:scale-105 transition-all shadow-md"
+                      size="icon"
+                      onClick={() => console.log("Download", data.products.id)}>
+                      <Download size={18} />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right">Download</TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      className="bg-white/90 text-gray-800 hover:bg-white/100 hover:scale-105 transition-all shadow-md"
+                      size="icon"
+                      onClick={() =>
+                        console.log("Add to Collection", data.products.id)
+                      }>
+                      <Shapes size={18} />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right">
+                    Add to Collection
+                  </TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      className="bg-white/90 text-gray-800 hover:bg-white/100 hover:scale-105 transition-all shadow-md"
+                      size="icon"
+                      onClick={() => console.log("Like", data.products.id)}>
+                      <Heart size={18} />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right">Like</TooltipContent>
+                </Tooltip>
+              </div>
+            </TooltipProvider>
           </div>
         )}
       />
