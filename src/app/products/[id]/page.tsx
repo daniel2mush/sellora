@@ -24,7 +24,6 @@ import { headers } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { toast } from "sonner";
 
 export default async function ProductDetails({
   params,

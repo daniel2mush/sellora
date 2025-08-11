@@ -1,11 +1,9 @@
 // components/ProductPage.jsx
 "use client";
 
-import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { Search } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import {
   Pagination,
   PaginationContent,

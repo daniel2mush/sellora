@@ -13,7 +13,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"; // Added for tooltips
-import { cn } from "@/lib/utils"; // Assuming cn utility for conditional classes
 
 export default function MasonryGrid({
   products,

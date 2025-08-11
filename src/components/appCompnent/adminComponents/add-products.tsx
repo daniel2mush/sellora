@@ -1,6 +1,5 @@
 "use client";
 import { getSignature } from "@/app/actions/cloudinary/cloudinary";
-import { addNewProductAction } from "@/app/actions/admin/productAction";
 import { Button } from "@/components/ui/button";
 import { DialogClose, DialogFooter } from "@/components/ui/dialog";
 import {
@@ -17,7 +16,7 @@ import axios from "axios";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import z, { success } from "zod";
+import z from "zod";
 
 type productTypes = {
   id: string;
@@ -36,9 +35,7 @@ import slugify from "slugify";
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";

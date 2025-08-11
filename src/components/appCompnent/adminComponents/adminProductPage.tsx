@@ -41,7 +41,6 @@ import AddProductForm from "./add-products";
 
 import {
   GetAdminProducts,
-  useAddAdminProducts,
   useDelete,
   useUpdateIsPublish,
 } from "@/lib/utils/admin/adminQueryFun";

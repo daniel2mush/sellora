@@ -2,7 +2,6 @@ import { SetUserToAdminActions } from "@/app/actions/userActions/userActions";
 import {
   AlertDialogHeader,
   AlertDialogFooter,
-  AlertDialogTrigger,
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,

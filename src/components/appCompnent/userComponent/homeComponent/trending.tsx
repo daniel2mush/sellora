@@ -1,6 +1,5 @@
 "use client";
 
-import { Masonry } from "masonic";
 import Image from "next/image";
 
 const images = Array.from({ length: 8 }, (_, i) => ({

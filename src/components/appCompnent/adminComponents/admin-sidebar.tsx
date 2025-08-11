@@ -2,44 +2,26 @@
 
 import { Sidebar, useSidebar } from "../../ui/sidebar";
 import {
-  ArrowUpDown,
-  ChartBar,
   CreditCard,
   LayoutDashboard,
-  LogOut,
   Package,
   Plus,
-  Settings,
   ShoppingBasket,
-  User,
 } from "lucide-react";
 import Link from "next/link";
 import { useSession } from "@/lib/authClient";
 import { Suspense, useState } from "react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "../../ui/dropdown-menu";
-import { Avatar, AvatarImage } from "../../ui/avatar";
-import { AvatarFallback } from "@radix-ui/react-avatar";
+
 import {
   Dialog,
-  DialogClose,
   DialogContent,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "../../ui/dialog";
-import { Button } from "../../ui/button";
 import AddProductForm from "./add-products";
 
 export default function AdminSideBar() {
-  const { state } = useSidebar();
-  const { data, isPending } = useSession();
   const [open, setOpen] = useState(false);
 
   const items = [
@@ -48,22 +30,12 @@ export default function AdminSideBar() {
       url: "/admin/dashboard/products",
       icon: <Package className="w-5 h-5 flex-shrink-0" />,
     },
-    // {
-    //   title: "Orders",
-    //   url: "/admin/dashboard/orders",
-    //   icon: <ArrowUpDown className="w-5 h-5 flex-shrink-0" />,
-    // },
+
     {
       title: "Payments",
       url: "/admin/dashboard/payments",
       icon: <CreditCard className="w-5 h-5 flex-shrink-0" />,
     },
-
-    // {
-    //   title: "Settings",
-    //   url: "/admin/dashboard/settings",
-    //   icon: <Settings className="w-5 h-5 flex-shrink-0" />,
-    // },
   ];
 
   return (

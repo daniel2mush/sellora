@@ -1,26 +1,12 @@
 "use client";
 import Link from "next/link";
-import { LogOutIcon } from "lucide-react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useSession } from "@/lib/authClient";
-import { toast } from "sonner";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "../../../ui/alert-dialog";
-import { SetUserToAdminActions } from "@/app/actions/userActions/userActions";
+
 import Image from "next/image";
 import MoreOption from "../more/MoreOption";
 import { useEffect, useRef, useState } from "react";
-import { cn } from "@/lib/utils"; // Assuming you have a cn utility from Shadcn
-
+import { cn } from "@/lib/utils";
 export default function DesktopNavigation() {
   const { data: session, isPending } = useSession();
   const pathname = usePathname();

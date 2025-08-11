@@ -1,6 +1,5 @@
 "use client";
 
-import { session } from "@/lib/db/schema";
 import {
   Bell,
   Inbox,
@@ -17,7 +16,6 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../../ui/dropdown-menu";

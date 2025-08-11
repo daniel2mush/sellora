@@ -5,9 +5,6 @@ const nextConfig: NextConfig = {
   images: {
     domains: ["res.cloudinary.com", "lh3.googleusercontent.com"],
   },
-  experimental: {
-    esmExternals: "loose", // Allow ESM packages like @react-pdf/renderer
-  },
 };
 
 export default nextConfig;

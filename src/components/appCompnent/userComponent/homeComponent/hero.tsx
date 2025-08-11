@@ -3,8 +3,6 @@ import { Search } from "lucide-react";
 import Image from "next/image";
 
 export default function HeroSection() {
-  // const [currentNumber, setCurrentNumber] = useState(1);
-
   const backgroundStyle: React.CSSProperties = {
     backgroundImage: `url(${getImageUrl(`Background${4}.jpg`)})`,
     backgroundRepeat: "no-repeat",

@@ -10,25 +10,21 @@ import {
   Layers,
   Globe,
   Star,
-} from "lucide-react"; // Added relevant icons
+} from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Sidebar } from "@/components/ui/sidebar"; // Assuming this is used elsewhere, kept it
-import Image from "next/image";
-import { Button } from "@/components/ui/button"; // Added for potential close button
-import { cn } from "@/lib/utils"; // Assuming cn utility for classnames
+
+import { cn } from "@/lib/utils";
 
 const ContentOptions = [
   { display: "All", value: "", icon: <Globe className="w-4 h-4" /> },
   { display: "Photos", value: "photos", icon: <Camera className="w-4 h-4" /> },
   { display: "PNGs", value: "pngs", icon: <FileImage className="w-4 h-4" /> },
   { display: "PSDs", value: "psds", icon: <Layers className="w-4 h-4" /> },
-  { display: "SVGs", value: "svgs", icon: <Globe className="w-4 h-4" /> }, // Using Globe as a placeholder for vector-like
   {
     display: "Templates",
     value: "templates",
     icon: <Settings2 className="w-4 h-4" />,
   },
-  { display: "Vectors", value: "vectors", icon: <Star className="w-4 h-4" /> }, // Star as placeholder
 ];
 
 const LicenseOptions = [

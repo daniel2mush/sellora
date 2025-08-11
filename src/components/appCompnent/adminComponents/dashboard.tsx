@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useMemo, ChangeEvent, FC } from "react";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+
 import {
   CalendarDays,
   ChartNoAxesColumn,

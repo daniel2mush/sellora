@@ -2,14 +2,6 @@ import { Check } from "lucide-react";
 import Image from "next/image";
 
 export default function JoinToday() {
-  //   const value = ["Millions of Pro only resources
-  // Unlimited downloads
-  // Full commerical rights
-  // No attribution required
-  // Download bundles and collections
-  // Faster downloads and no ads
-  // Priority support"]
-
   const stringList = [
     "Millions of Pro only resources",
     "Unlimited downloads",
