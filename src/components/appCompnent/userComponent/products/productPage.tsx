@@ -31,14 +31,13 @@ export function UserProducts() {
   const searchParams = useSearchParams();
   const searchString = searchParams.toString();
 
-  const { data, error, isLoading } = useQuery<productPageProps>({
+  const { data, isLoading } = useQuery<productPageProps>({
     queryKey: ["products", searchString],
     queryFn: () => fetchAllProducts(searchString),
   });
   const router = useRouter();
 
   const searchValue = searchParams.get("content");
-  const [query, setQuery] = useState(searchParams.get("query") || "");
 
   if (isLoading) {
     return (
@@ -67,7 +66,6 @@ export function UserProducts() {
   };
 
   const getPageNumbers = () => {
-    const maxPagesToShow = 5;
     const pages: (number | "ellipsis")[] = [];
     const startPage = Math.max(2, currentPage - 2);
     const endPage = Math.min(totalPages - 1, currentPage + 2);

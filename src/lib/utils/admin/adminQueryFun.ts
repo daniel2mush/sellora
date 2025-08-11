@@ -10,6 +10,8 @@ import { AdminTotalProductProps } from "@/lib/types/admin/productsTypes";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
+type DateRange = { from: Date; to: Date };
+
 export async function GetAdminProducts(searchQuery: string) {
   try {
     const res = await axios.get(`/api/admin/products?${searchQuery}`);
@@ -104,7 +106,7 @@ export function useGetProductTotal() {
 }
 
 // ------------ Dashboard ----------
-export function useExtraMetrics(range: any) {
+export function useExtraMetrics(range: DateRange) {
   return useQuery<Stat, Error>({
     queryKey: ["extra-metrics", range.from, range.to],
     queryFn: async () => {
@@ -117,7 +119,7 @@ export function useExtraMetrics(range: any) {
   });
 }
 
-export function useSaleAnalytics(range: any) {
+export function useSaleAnalytics(range: DateRange) {
   return useQuery<SalesAnalyticsItem[], Error>({
     queryKey: ["sales-analytics", range.from, range.to],
     queryFn: async () => {
@@ -130,7 +132,7 @@ export function useSaleAnalytics(range: any) {
   });
 }
 
-export function useTopProducts(range: any) {
+export function useTopProducts() {
   return useQuery<TopProduct[], Error>({
     queryKey: ["top-products"],
     queryFn: async () => {

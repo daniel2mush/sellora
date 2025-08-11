@@ -118,7 +118,7 @@ export default function SellerDashboard() {
     data: topProducts = [],
     isLoading: topLoading,
     isError: topError,
-  } = useTopProducts(range);
+  } = useTopProducts();
 
   const {
     data: recentPurchases = [],
