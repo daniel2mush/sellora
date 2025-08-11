@@ -201,7 +201,7 @@ export const invoices = pgTable("invoices", {
 
 // relations
 
-export const UserRelations = relations(user, ({ one, many }) => {
+export const UserRelations = relations(user, ({ many }) => {
   return {
     sessions: many(session),
     accounts: many(account),

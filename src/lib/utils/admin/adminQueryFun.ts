@@ -76,7 +76,7 @@ export function useUpdate() {
       ...body
     }: {
       productId: string;
-      [key: string]: any;
+      [key: string]: unknown;
     }) => {
       const res = await axios.put(`/api/admin/products/${productId}`, body);
       return res.data as { success: boolean; message: string };
