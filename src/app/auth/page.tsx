@@ -1,11 +1,5 @@
-"use client";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+'use client'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   Form,
   FormControl,
@@ -13,36 +7,36 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useState } from "react";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button";
-import { getImageUrl } from "@/lib/shared/get-image";
-import Image from "next/image";
-import { useForm } from "react-hook-form";
-import { Input } from "@/components/ui/input";
-import { Eye, EyeOff, Loader2 } from "lucide-react";
-import { signIn, signUp } from "@/lib/authClient";
-import { toast } from "sonner";
+} from '@/components/ui/form'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useState } from 'react'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Button } from '@/components/ui/button'
+import { getImageUrl } from '@/lib/shared/get-image'
+import Image from 'next/image'
+import { useForm } from 'react-hook-form'
+import { Input } from '@/components/ui/input'
+import { Eye, EyeOff, Loader2 } from 'lucide-react'
+import { signIn, signUp } from '@/lib/authClient'
+import { toast } from 'sonner'
 
 export default function AuthPage() {
-  const [value, setValue] = useState("login");
+  const [value, setValue] = useState('login')
 
   async function handleGoogleLogin() {
     await signIn.social({
-      provider: "google",
-      callbackURL: "/",
-    });
+      provider: 'google',
+      callbackURL: '/',
+    })
   }
 
   const backgroundStyle: React.CSSProperties = {
-    backgroundImage: `url(${getImageUrl("Background9.jpg")})`,
-    backgroundRepeat: "no-repeat",
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-  };
+    backgroundImage: `url(${getImageUrl('Background9.jpg')})`,
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+  }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 min-h-screen">
@@ -54,9 +48,7 @@ export default function AuthPage() {
       <div className="w-full bg-white px-6 py-20 flex items-center justify-center min-h-screen col-span-1">
         <Card className="w-full max-w-md border-none shadow-none">
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl md:text-3xl font-bold">
-              Welcome Back!
-            </CardTitle>
+            <CardTitle className="text-2xl md:text-3xl font-bold">Welcome Back!</CardTitle>
             <CardDescription>Login to continue</CardDescription>
           </CardHeader>
           <CardContent>
@@ -65,9 +57,10 @@ export default function AuthPage() {
               type="button"
               onClick={handleGoogleLogin}
               className="w-full mb-6"
-              variant="outline">
+              variant="outline"
+            >
               <Image
-                src={getImageUrl("google-logo.png")}
+                src={getImageUrl('google-logo.png')}
                 alt="Google logo"
                 height={20}
                 width={20}
@@ -79,9 +72,7 @@ export default function AuthPage() {
             {/* Divider */}
             <div className="flex items-center justify-center mb-6">
               <div className="h-px bg-gray-300 flex-1" />
-              <span className="px-3 text-sm text-gray-500">
-                Or continue with email
-              </span>
+              <span className="px-3 text-sm text-gray-500">Or continue with email</span>
               <div className="h-px bg-gray-300 flex-1" />
             </div>
 
@@ -95,52 +86,53 @@ export default function AuthPage() {
                 <LoginForm />
               </TabsContent>
               <TabsContent value="register">
-                <RegisterForm switchValue={() => setValue("login")} />
+                <RegisterForm switchValue={() => setValue('login')} />
               </TabsContent>
             </Tabs>
           </CardContent>
         </Card>
       </div>
     </div>
-  );
+  )
 }
 
 export function LoginForm() {
   const LoginSchema = z.object({
-    email: z.email("Invalid email address"),
-    password: z.string().min(1, "Password is required"),
-  });
+    email: z.email('Invalid email address'),
+    password: z.string().min(1, 'Password is required'),
+  })
 
-  type LoginTypes = z.infer<typeof LoginSchema>;
+  type LoginTypes = z.infer<typeof LoginSchema>
 
   const form = useForm<LoginTypes>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
     },
-  });
+  })
 
-  const [isVisible, setIsVisible] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isVisible, setIsVisible] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   async function handleLoginForm(values: LoginTypes) {
-    setIsLoading(true);
+    setIsLoading(true)
     try {
       const data = await signIn.email({
         email: values.email,
         password: values.password,
-        callbackURL: "/",
-      });
+        callbackURL: '/',
+      })
       if (data.error) {
-        toast.error(data.error.message);
-        return;
+        toast.error(data.error.message)
+        return
       }
-      toast.success("Login successful");
+      toast.success('Login successful')
     } catch (error) {
-      toast.error("An unexpected error occurred");
+      toast.error('An unexpected error occurred')
+      console.log(error)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
   }
 
@@ -167,17 +159,14 @@ export function LoginForm() {
             <FormItem>
               <div className="flex justify-between items-center">
                 <FormLabel>Password</FormLabel>
-                <Button
-                  type="button"
-                  variant="link"
-                  className="p-0 text-sm h-auto">
+                <Button type="button" variant="link" className="p-0 text-sm h-auto">
                   Forgot password?
                 </Button>
               </div>
               <FormControl>
                 <div className="relative">
                   <Input
-                    type={isVisible ? "text" : "password"}
+                    type={isVisible ? 'text' : 'password'}
                     placeholder="Enter your password"
                     {...field}
                   />
@@ -186,12 +175,9 @@ export function LoginForm() {
                     variant="ghost"
                     size="icon"
                     className="absolute right-0 top-1/2 -translate-y-1/2"
-                    onClick={() => setIsVisible(!isVisible)}>
-                    {isVisible ? (
-                      <Eye className="h-4 w-4" />
-                    ) : (
-                      <EyeOff className="h-4 w-4" />
-                    )}
+                    onClick={() => setIsVisible(!isVisible)}
+                  >
+                    {isVisible ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
                   </Button>
                 </div>
               </FormControl>
@@ -200,72 +186,68 @@ export function LoginForm() {
           )}
         />
         <Button type="submit" className="w-full mt-4" disabled={isLoading}>
-          {isLoading ? (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          ) : (
-            "Login"
-          )}
+          {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 'Login'}
         </Button>
       </form>
     </Form>
-  );
+  )
 }
 
 export function RegisterForm({ switchValue }: { switchValue: () => void }) {
   const RegisterSchema = z
     .object({
-      name: z.string().min(4, "Name must be at least 4 characters"),
-      email: z.string().email("Invalid email address"),
-      password: z.string().min(4, "Password must be at least 4 characters"),
+      name: z.string().min(4, 'Name must be at least 4 characters'),
+      email: z.string().email('Invalid email address'),
+      password: z.string().min(4, 'Password must be at least 4 characters'),
       confirmPassword: z.string(),
     })
     .refine((data) => data.password === data.confirmPassword, {
-      message: "Passwords do not match",
-      path: ["confirmPassword"],
-    });
+      message: 'Passwords do not match',
+      path: ['confirmPassword'],
+    })
 
-  type RegisterTypes = z.infer<typeof RegisterSchema>;
+  type RegisterTypes = z.infer<typeof RegisterSchema>
 
   const form = useForm<RegisterTypes>({
     resolver: zodResolver(RegisterSchema),
     defaultValues: {
-      name: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
+      name: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
     },
-  });
+  })
 
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const [isConfirmVisible, setIsConfirmVisible] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false)
+  const [isConfirmVisible, setIsConfirmVisible] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   async function handleRegisterForm(values: RegisterTypes) {
-    setIsLoading(true);
+    setIsLoading(true)
     try {
       const data = await signUp.email({
         name: values.name,
         email: values.email,
         password: values.password,
-      });
+      })
       if (data.error) {
-        toast.error(data.error.message);
-        return;
+        toast.error(data.error.message)
+        return
       }
-      toast.success("Registration successful. Please login to continue.");
-      switchValue();
+      toast.success('Registration successful. Please login to continue.')
+      switchValue()
     } catch (error) {
-      toast.error("An unexpected error occurred");
+      console.log(error)
+
+      toast.error('An unexpected error occurred')
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
   }
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(handleRegisterForm)}
-        className="space-y-4">
+      <form onSubmit={form.handleSubmit(handleRegisterForm)} className="space-y-4">
         <FormField
           name="name"
           control={form.control}
@@ -301,7 +283,7 @@ export function RegisterForm({ switchValue }: { switchValue: () => void }) {
               <FormControl>
                 <div className="relative">
                   <Input
-                    type={isPasswordVisible ? "text" : "password"}
+                    type={isPasswordVisible ? 'text' : 'password'}
                     placeholder="Enter your password"
                     {...field}
                   />
@@ -310,7 +292,8 @@ export function RegisterForm({ switchValue }: { switchValue: () => void }) {
                     variant="ghost"
                     size="icon"
                     className="absolute right-0 top-1/2 -translate-y-1/2"
-                    onClick={() => setIsPasswordVisible(!isPasswordVisible)}>
+                    onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+                  >
                     {isPasswordVisible ? (
                       <Eye className="h-4 w-4" />
                     ) : (
@@ -332,7 +315,7 @@ export function RegisterForm({ switchValue }: { switchValue: () => void }) {
               <FormControl>
                 <div className="relative">
                   <Input
-                    type={isConfirmVisible ? "text" : "password"}
+                    type={isConfirmVisible ? 'text' : 'password'}
                     placeholder="Confirm your password"
                     {...field}
                   />
@@ -341,7 +324,8 @@ export function RegisterForm({ switchValue }: { switchValue: () => void }) {
                     variant="ghost"
                     size="icon"
                     className="absolute right-0 top-1/2 -translate-y-1/2"
-                    onClick={() => setIsConfirmVisible(!isConfirmVisible)}>
+                    onClick={() => setIsConfirmVisible(!isConfirmVisible)}
+                  >
                     {isConfirmVisible ? (
                       <Eye className="h-4 w-4" />
                     ) : (
@@ -355,13 +339,9 @@ export function RegisterForm({ switchValue }: { switchValue: () => void }) {
           )}
         />
         <Button type="submit" className="w-full mt-4" disabled={isLoading}>
-          {isLoading ? (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          ) : (
-            "Register"
-          )}
+          {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 'Register'}
         </Button>
       </form>
     </Form>
-  );
+  )
 }

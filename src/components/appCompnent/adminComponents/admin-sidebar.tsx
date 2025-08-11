@@ -1,42 +1,29 @@
-"use client";
+'use client'
 
-import { Sidebar, useSidebar } from "../../ui/sidebar";
-import {
-  CreditCard,
-  LayoutDashboard,
-  Package,
-  Plus,
-  ShoppingBasket,
-} from "lucide-react";
-import Link from "next/link";
-import { useSession } from "@/lib/authClient";
-import { Suspense, useState } from "react";
+import { Sidebar } from '../../ui/sidebar'
+import { CreditCard, LayoutDashboard, Package, Plus, ShoppingBasket } from 'lucide-react'
+import Link from 'next/link'
+import { useState } from 'react'
 
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "../../ui/dialog";
-import AddProductForm from "./add-products";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../../ui/dialog'
+import AddProductForm from './add-products'
 
 export default function AdminSideBar() {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false)
 
   const items = [
     {
-      title: "Products",
-      url: "/admin/dashboard/products",
+      title: 'Products',
+      url: '/admin/dashboard/products',
       icon: <Package className="w-5 h-5 flex-shrink-0" />,
     },
 
     {
-      title: "Payments",
-      url: "/admin/dashboard/payments",
+      title: 'Payments',
+      url: '/admin/dashboard/payments',
       icon: <CreditCard className="w-5 h-5 flex-shrink-0" />,
     },
-  ];
+  ]
 
   return (
     <Sidebar collapsible="icon" className="overflow-hidden">
@@ -46,9 +33,7 @@ export default function AdminSideBar() {
           <ShoppingBasket size={30} className="flex-shrink-0" />
           <div className="overflow-hidden transition-all duration-300">
             <h1 className="text-2xl font-black whitespace-nowrap">SELLORA</h1>
-            <p className="text-muted-foreground whitespace-nowrap">
-              Selling with ease
-            </p>
+            <p className="text-muted-foreground whitespace-nowrap">Selling with ease</p>
           </div>
         </div>
 
@@ -75,7 +60,8 @@ export default function AdminSideBar() {
           <div className="space-y-5">
             <Link
               href="/admin/dashboard"
-              className="flex items-center gap-5 pl-2 w-full py-2 rounded hover:bg-gray-800">
+              className="flex items-center gap-5 pl-2 w-full py-2 rounded hover:bg-gray-800"
+            >
               <LayoutDashboard width={20} className="flex-shrink-0" />
               <h1>Dashboard</h1>
             </Link>
@@ -83,7 +69,8 @@ export default function AdminSideBar() {
               <Link
                 className="flex items-center gap-5 pl-2 w-full py-2 rounded hover:bg-gray-800"
                 href={item.url}
-                key={item.title}>
+                key={item.title}
+              >
                 {item.icon}
                 <h1>{item.title}</h1>
               </Link>
@@ -92,5 +79,5 @@ export default function AdminSideBar() {
         </div>
       </div>
     </Sidebar>
-  );
+  )
 }

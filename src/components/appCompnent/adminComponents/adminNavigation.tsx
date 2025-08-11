@@ -1,16 +1,7 @@
-"use client";
+'use client'
 
-import {
-  Bell,
-  Inbox,
-  LogOutIcon,
-  Mail,
-  MessageCircle,
-  Search,
-  Settings,
-  User,
-} from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
+import { Bell, LogOutIcon, Mail, Settings, User } from 'lucide-react'
+import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,41 +9,28 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "../../ui/dropdown-menu";
-import { signOut, useSession } from "@/lib/authClient";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "../../ui/alert-dialog";
-import { SetUserToAdminActions } from "@/app/actions/userActions/userActions";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import { Input } from "../../ui/input";
-import { Button } from "../../ui/button";
+} from '../../ui/dropdown-menu'
+import { signOut, useSession } from '@/lib/authClient'
+
+import { toast } from 'sonner'
+import { useRouter } from 'next/navigation'
 
 export default function AdminNavigation() {
-  const { data: session, isPending } = useSession();
-  const router = useRouter();
+  const { data: session, isPending } = useSession()
+  const router = useRouter()
   const handleLogout = async () => {
     try {
-      const data = await signOut();
+      const data = await signOut()
       if (data.data?.success) {
-        toast.success("Logged out sucessfully");
-        router.refresh();
-        return;
+        toast.success('Logged out sucessfully')
+        router.refresh()
+        return
       }
-      toast.error(data.error?.message);
+      toast.error(data.error?.message)
     } catch (e) {
-      console.log(e);
+      console.log(e)
     }
-  };
+  }
   return (
     <div className=" sticky top-0 left-0 right-0 flex items-center   justify-end   w-full gap-7 px-5 py-2 ml-10 mt-4">
       {/* Search  */}
@@ -104,31 +82,26 @@ export default function AdminNavigation() {
                     <AvatarFallback className=" bg-amber-700 text-white">
                       {session.user.name.charAt(0)}
                     </AvatarFallback>
-                    <AvatarImage
-                      src={session.user?.image as string}
-                      alt="profile"
-                    />
+                    <AvatarImage src={session.user?.image as string} alt="profile" />
                   </Avatar>
                   <div className=" flex  flex-col items-start ">
                     <h1 className=" text font-bold">{session.user.name}</h1>
-                    <p className=" text-sm text-muted-foreground">
-                      {session.user.role}
-                    </p>
+                    <p className=" text-sm text-muted-foreground">{session.user.role}</p>
                   </div>
                 </div>
               </DropdownMenuTrigger>
               <DropdownMenuContent className=" w-56" align="end">
                 <DropdownMenuGroup>
                   <DropdownMenuItem>
-                    {" "}
+                    {' '}
                     <User /> Account
                   </DropdownMenuItem>
                   <DropdownMenuItem>
-                    {" "}
+                    {' '}
                     <Mail /> Inbox
                   </DropdownMenuItem>
                   <DropdownMenuItem>
-                    {" "}
+                    {' '}
                     <Settings /> Settings
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
@@ -147,5 +120,5 @@ export default function AdminNavigation() {
         </div>
       </div>
     </div>
-  );
+  )
 }

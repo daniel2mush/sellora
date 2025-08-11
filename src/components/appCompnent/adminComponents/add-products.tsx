@@ -1,7 +1,7 @@
-"use client";
-import { getSignature } from "@/app/actions/cloudinary/cloudinary";
-import { Button } from "@/components/ui/button";
-import { DialogClose, DialogFooter } from "@/components/ui/dialog";
+'use client'
+import { getSignature } from '@/app/actions/cloudinary/cloudinary'
+import { Button } from '@/components/ui/button'
+import { DialogClose, DialogFooter } from '@/components/ui/dialog'
 import {
   Form,
   FormControl,
@@ -9,152 +9,137 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
-import { useRef, useState } from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import z from "zod";
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { zodResolver } from '@hookform/resolvers/zod'
+import axios from 'axios'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
+import z from 'zod'
 
 type productTypes = {
-  id: string;
-  title: string;
-  description: string;
-  price: string;
-  thumbnailUrl: string;
-};
-
-interface AddProductProps {
-  products?: productTypes;
-  setOpen: () => void;
+  id: string
+  title: string
+  description: string
+  price: string
+  thumbnailUrl: string
 }
 
-import slugify from "slugify";
+interface AddProductProps {
+  products?: productTypes
+  setOpen: () => void
+}
+
+import slugify from 'slugify'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import {
-  useAddAdminProducts,
-  useUpdate,
-} from "@/lib/utils/admin/adminQueryFun";
+} from '@/components/ui/select'
+import { useAddAdminProducts, useUpdate } from '@/lib/utils/admin/adminQueryFun'
 
 export default function AddProductForm({ setOpen, products }: AddProductProps) {
-  const { mutate, data, isPending, isSuccess } = useAddAdminProducts();
+  const { mutate } = useAddAdminProducts()
 
-  const [thumbnailUploadProgress, setThumbnailUploadProgress] = useState(0);
-  const [assetUploadProgress, setAssetUploadProgress] = useState(0);
-  const [isUploading, setIsUploading] = useState(false);
-  const [value, setValue] = useState(0.0);
-  const closeref = useRef(null);
+  // const [thumbnailUploadProgress, setThumbnailUploadProgress] = useState(0);
+  const [assetUploadProgress, setAssetUploadProgress] = useState(0)
+  const [isUploading, setIsUploading] = useState(false)
 
-  const { mutateAsync } = useUpdate();
+  const { mutateAsync } = useUpdate()
 
   // File schemas
   const ThumbnailSchema = z
     .instanceof(File)
-    .refine((f) => f instanceof File && f.size > 0, "Thumbnail is required")
-    .refine((f) => f.size <= 10 * 1024 * 1024, "Thumbnail must be under 10MB")
+    .refine((f) => f instanceof File && f.size > 0, 'Thumbnail is required')
+    .refine((f) => f.size <= 10 * 1024 * 1024, 'Thumbnail must be under 10MB')
     .refine(
-      (f) =>
-        [
-          "image/jpeg",
-          "image/jpg",
-          "image/png",
-          "image/webp",
-          "image/avif",
-        ].includes(f.type),
-      "Invalid image format"
-    );
+      (f) => ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/avif'].includes(f.type),
+      'Invalid image format'
+    )
 
   const AssetSchema = z
     .instanceof(File)
-    .refine((f) => f instanceof File && f.size > 0, "Asset is required")
+    .refine((f) => f instanceof File && f.size > 0, 'Asset is required')
     .refine(
       (f) =>
         [
-          "application/pdf",
-          "application/zip",
-          "application/x-zip-compressed",
-          "image/jpeg",
-          "image/jpg",
-          "image/png",
-          "image/webp",
-          "image/avif",
+          'application/pdf',
+          'application/zip',
+          'application/x-zip-compressed',
+          'image/jpeg',
+          'image/jpg',
+          'image/png',
+          'image/webp',
+          'image/avif',
         ].includes(f.type),
-      "File must be PDF or ZIP"
+      'File must be PDF or ZIP'
     )
-    .refine((f) => f.size <= 10 * 1024 * 1024, "Asset must be under 10MB");
+    .refine((f) => f.size <= 10 * 1024 * 1024, 'Asset must be under 10MB')
 
   // Form schema
   const FormSchema = z.object({
     title: z
       .string()
-      .min(10, "Title should be more than 10 characters")
-      .max(122, "Title should be less than 122 characters"),
+      .min(10, 'Title should be more than 10 characters')
+      .max(122, 'Title should be less than 122 characters'),
     description: z.string().optional(),
     price: z.string().refine((val) => /^\d+\.\d{1,2}$/.test(val), {
-      message: "Enter a valid price with cents (e.g. 19.99)",
+      message: 'Enter a valid price with cents (e.g. 19.99)',
     }),
     thumbnail: ThumbnailSchema.optional(),
     asset: AssetSchema.optional(),
-    category: z.enum(["psd", "photo", "png", "svg", "template", "vector"]),
-  });
+    category: z.enum(['psd', 'photo', 'png', 'svg', 'template', 'vector']),
+  })
 
-  type FormTypes = z.infer<typeof FormSchema>;
+  type FormTypes = z.infer<typeof FormSchema>
 
   const form = useForm<FormTypes>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      title: products?.title || "",
-      description: products?.description || "",
-      price: products?.price ? (Number(products?.price) / 100).toFixed(2) : "",
-      category: "photo",
+      title: products?.title || '',
+      description: products?.description || '',
+      price: products?.price ? (Number(products?.price) / 100).toFixed(2) : '',
+      category: 'photo',
     },
-  });
+  })
 
   async function AddProduct(data: FormTypes) {
-    setIsUploading(true);
+    setIsUploading(true)
     const parsed = {
       ...data,
       price: Math.round(parseFloat(data.price) * 100),
-    };
+    }
 
     type clodinaryTypes = {
-      public_id: string;
-      secure_url: string;
-      bytes: number;
-    };
+      public_id: string
+      secure_url: string
+      bytes: number
+    }
     const thumbnail = (await UploadThumbnailToCloudinary(
       data.thumbnail!,
       data.title
-    )) as clodinaryTypes;
-    const assets = (await UploadAssetToCloudinary(
-      data.asset!,
-      data.title
-    )) as clodinaryTypes;
+    )) as clodinaryTypes
+    const assets = (await UploadAssetToCloudinary(data.asset!, data.title)) as clodinaryTypes
 
-    console.log(assets, "Cloudinary response");
+    console.log(assets, 'Cloudinary response')
 
     try {
       if (assets) {
-        const fileType = assets.public_id.split("/").pop()?.split(".").pop();
+        const fileType = assets.public_id.split('/').pop()?.split('.').pop()
 
-        const DataBaseFormData = new FormData();
-        DataBaseFormData.append("title", data.title);
-        DataBaseFormData.append("description", data.description || "");
-        DataBaseFormData.append("price", parsed.price.toString());
-        DataBaseFormData.append("thumbnailUrl", thumbnail.secure_url);
-        DataBaseFormData.append("assetUrl", assets.secure_url);
-        DataBaseFormData.append("publicId", assets.public_id);
-        DataBaseFormData.append("assetType", fileType as string);
-        DataBaseFormData.append("assetSize", assets.bytes.toString());
-        DataBaseFormData.append("category", data.category);
+        const DataBaseFormData = new FormData()
+        DataBaseFormData.append('title', data.title)
+        DataBaseFormData.append('description', data.description || '')
+        DataBaseFormData.append('price', parsed.price.toString())
+        DataBaseFormData.append('thumbnailUrl', thumbnail.secure_url)
+        DataBaseFormData.append('assetUrl', assets.secure_url)
+        DataBaseFormData.append('publicId', assets.public_id)
+        DataBaseFormData.append('assetType', fileType as string)
+        DataBaseFormData.append('assetSize', assets.bytes.toString())
+        DataBaseFormData.append('category', data.category)
 
         // const { message, success } = await addNewProductAction(
         //   DataBaseFormData
@@ -166,40 +151,34 @@ export default function AddProductForm({ setOpen, products }: AddProductProps) {
         // }
         // toast.error(message);
 
-        mutate(DataBaseFormData);
+        mutate(DataBaseFormData)
 
-        setOpen();
-        toast.success("Product added successfully");
+        setOpen()
+        toast.success('Product added successfully')
       }
     } catch (error) {
-      console.log(error);
+      console.log(error)
     } finally {
-      setIsUploading(false);
-      form.reset();
+      setIsUploading(false)
+      form.reset()
     }
   }
 
   async function UpdateProducts(data: FormTypes) {
-    setIsUploading(true);
+    setIsUploading(true)
     const parsed = {
       ...data,
       price: Math.round(parseFloat(data.price) * 100),
-    };
+    }
     type clodinaryTypes = {
-      public_id: string;
-      secure_url: string;
-      bytes: number;
-    };
-    const thumbnail: any = data.thumbnail
-      ? ((await UploadThumbnailToCloudinary(
-          data.thumbnail!,
-          data.title
-        )) as clodinaryTypes)
-      : "";
-
-    console.log(thumbnail.secure_url, "Thumbnail, front end");
-
-    console.log("Code got to this point ");
+      public_id: string
+      secure_url: string
+      bytes: number
+    }
+    const thumbnail = (await UploadThumbnailToCloudinary(
+      data.thumbnail!,
+      data.title
+    )) as clodinaryTypes
 
     try {
       const { success, message } = await mutateAsync({
@@ -208,38 +187,39 @@ export default function AddProductForm({ setOpen, products }: AddProductProps) {
         description: data.description,
         price: parsed.price,
         thumbnailUrl: thumbnail.secure_url,
-      });
+      })
 
       if (success) {
-        toast.success(message);
-        return;
+        toast.success(message)
+        return
       }
-      toast.error(message);
+      toast.error(message)
     } catch (error) {
-      console.log(error);
+      console.log(error)
     } finally {
-      setOpen(), form.reset();
+      setOpen()
+      form.reset()
     }
   }
 
   async function UploadThumbnailToCloudinary(file: File, title: string) {
-    const now = new Date();
-    const timestamp = Math.floor(now.getTime() / 1000);
+    const now = new Date()
+    const timestamp = Math.floor(now.getTime() / 1000)
     const public_id = `${slugify(title, {
       strict: true,
       trim: true,
       lower: true,
-    })}-${Date.now()}`;
-    const { data, status, message } = await getSignature(timestamp, public_id);
+    })}-${Date.now()}`
+    const { data } = await getSignature(timestamp, public_id)
 
-    const folder = "sellora";
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("folder", folder);
-    formData.append("api_key", data.apiKey);
-    formData.append("signature", data.signature);
-    formData.append("timestamp", timestamp.toString());
-    formData.append("public_id", public_id);
+    const folder = 'sellora'
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('folder', folder)
+    formData.append('api_key', data.apiKey)
+    formData.append('signature', data.signature)
+    formData.append('timestamp', timestamp.toString())
+    formData.append('public_id', public_id)
 
     try {
       const cloudinaryRes = await axios.post(
@@ -247,40 +227,36 @@ export default function AddProductForm({ setOpen, products }: AddProductProps) {
         formData,
         {
           headers: {
-            "Content-Type": "multipart/form-data",
-          },
-          onUploadProgress: (e) => {
-            const progress = Math.round((e.loaded * 100) / (e.total || 1));
-            setThumbnailUploadProgress(progress);
+            'Content-Type': 'multipart/form-data',
           },
         }
-      );
+      )
 
-      const res = await cloudinaryRes.data;
-      return res;
+      const res = await cloudinaryRes.data
+      return res
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
   }
 
   async function UploadAssetToCloudinary(file: File, title: string) {
-    const now = new Date();
-    const timestamp = Math.floor(now.getTime() / 1000);
+    const now = new Date()
+    const timestamp = Math.floor(now.getTime() / 1000)
     const public_id = `${slugify(title, {
       strict: true,
       trim: true,
       lower: true,
-    })}-${Date.now()}`;
-    const { data, status, message } = await getSignature(timestamp, public_id);
+    })}-${Date.now()}`
+    const { data } = await getSignature(timestamp, public_id)
 
-    const folder = "sellora";
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("folder", folder);
-    formData.append("api_key", data.apiKey);
-    formData.append("signature", data.signature);
-    formData.append("timestamp", timestamp.toString());
-    formData.append("public_id", public_id);
+    const folder = 'sellora'
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('folder', folder)
+    formData.append('api_key', data.apiKey)
+    formData.append('signature', data.signature)
+    formData.append('timestamp', timestamp.toString())
+    formData.append('public_id', public_id)
 
     try {
       const cloudinaryRes = await axios.post(
@@ -288,19 +264,19 @@ export default function AddProductForm({ setOpen, products }: AddProductProps) {
         formData,
         {
           headers: {
-            "Content-Type": "multipart/form-data",
+            'Content-Type': 'multipart/form-data',
           },
           onUploadProgress: (e) => {
-            const progress = Math.round((e.loaded * 100) / (e.total || 1));
-            setAssetUploadProgress(progress);
+            const progress = Math.round((e.loaded * 100) / (e.total || 1))
+            setAssetUploadProgress(progress)
           },
         }
-      );
+      )
 
-      const res = await cloudinaryRes.data;
-      return res;
+      const res = await cloudinaryRes.data
+      return res
     } catch (e) {
-      console.log(e);
+      console.log(e)
     }
   }
 
@@ -308,7 +284,8 @@ export default function AddProductForm({ setOpen, products }: AddProductProps) {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(products ? UpdateProducts : AddProduct)}
-        className="space-y-6">
+        className="space-y-6"
+      >
         {/* Title */}
         <FormField
           name="title"
@@ -345,12 +322,7 @@ export default function AddProductForm({ setOpen, products }: AddProductProps) {
             <FormItem>
               <FormLabel>Price</FormLabel>
               <FormControl>
-                <Input
-                  type="text"
-                  step={".01"}
-                  placeholder="Enter price"
-                  {...field}
-                />
+                <Input type="text" step={'.01'} placeholder="Enter price" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -368,8 +340,8 @@ export default function AddProductForm({ setOpen, products }: AddProductProps) {
                   type="file"
                   accept="image/*"
                   onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) field.onChange(file);
+                    const file = e.target.files?.[0]
+                    if (file) field.onChange(file)
                   }}
                 />
               </FormControl>
@@ -419,8 +391,8 @@ export default function AddProductForm({ setOpen, products }: AddProductProps) {
                     type="file"
                     accept=".pdf,.zip,image/*"
                     onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) field.onChange(file);
+                      const file = e.target.files?.[0]
+                      if (file) field.onChange(file)
                     }}
                   />
                 </FormControl>
@@ -441,10 +413,7 @@ export default function AddProductForm({ setOpen, products }: AddProductProps) {
                 }}
               />
             </div>
-            <p className=" text-sm text-gray-500 text-end">
-              {" "}
-              {assetUploadProgress}% upload
-            </p>
+            <p className=" text-sm text-gray-500 text-end"> {assetUploadProgress}% upload</p>
           </div>
         )}
         <DialogFooter>
@@ -457,13 +426,13 @@ export default function AddProductForm({ setOpen, products }: AddProductProps) {
             {isUploading ? (
               <div className=" h-7 w-7 rounded-full border-2 border-t-transparent animate-spin " />
             ) : products ? (
-              "Update Product"
+              'Update Product'
             ) : (
-              "Add Product"
+              'Add Product'
             )}
           </Button>
         </DialogFooter>
       </form>
     </Form>
-  );
+  )
 }

@@ -1,50 +1,50 @@
-"use server";
+'use server'
 
-import { auth } from "@/lib/auth";
-import { db } from "@/lib/db";
-import { user } from "@/lib/db/schema";
-import { and, eq } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
-import { headers } from "next/headers";
-import { redirect } from "next/navigation";
+import { auth } from '@/lib/auth'
+import { db } from '@/lib/db'
+import { user } from '@/lib/db/schema'
+import { and, eq } from 'drizzle-orm'
+import { revalidatePath } from 'next/cache'
+import { headers } from 'next/headers'
+import { redirect } from 'next/navigation'
 
 export const SetUserToAdminActions = async (userId: string) => {
   const session = await auth.api.getSession({
     headers: await headers(),
-  });
+  })
 
-  if (!session?.user) redirect("/auth");
+  if (!session?.user) redirect('/auth')
 
-  if (session.user.role === "admin")
+  if (session.user.role === 'admin')
     return {
       status: false,
-      message: "You are already an admin user",
-    };
+      message: 'You are already an admin user',
+    }
 
   try {
-    const data = await db
+    await db
       .update(user)
       .set({
-        role: "admin",
+        role: 'admin',
       })
-      .where(eq(user.id, userId));
-    revalidatePath("/");
-    revalidatePath("/products");
-    revalidatePath("/dashboard");
+      .where(eq(user.id, userId))
+    revalidatePath('/')
+    revalidatePath('/products')
+    revalidatePath('/dashboard')
 
     return {
       status: true,
-      message: "You have become an admin successfully",
-    };
+      message: 'You have become an admin successfully',
+    }
   } catch (error) {
-    console.log(error);
+    console.log(error)
 
     return {
       status: false,
-      message: "Error occured, please try again",
-    };
+      message: 'Error occured, please try again',
+    }
   }
-};
+}
 
 export async function GetUserInformation(userId: string) {
   // const session = await auth.api.getSession({
@@ -55,18 +55,18 @@ export async function GetUserInformation(userId: string) {
     const [userInfo] = await db
       .select()
       .from(user)
-      .where(and(eq(user.id, userId), eq(user.username, userId)));
+      .where(and(eq(user.id, userId), eq(user.username, userId)))
 
     return {
       status: true,
       userInfo,
-    };
+    }
   } catch (error) {
-    console.log(error);
+    console.log(error)
 
     return {
       status: false,
-      message: "Something went wrong, please try again later",
-    };
+      message: 'Something went wrong, please try again later',
+    }
   }
 }
