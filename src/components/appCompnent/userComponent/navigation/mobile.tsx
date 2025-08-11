@@ -6,10 +6,9 @@ import {
   SheetClose,
   SheetContent,
   SheetHeader,
-  SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Compass, DollarSign, FolderHeart, Home, Menu, X } from "lucide-react";
+import { Compass, DollarSign, FolderHeart, Home, Menu } from "lucide-react";
 import Image from "next/image";
 import { useSession } from "@/lib/authClient";
 import Link from "next/link";

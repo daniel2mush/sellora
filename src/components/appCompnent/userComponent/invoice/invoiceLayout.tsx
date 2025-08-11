@@ -4,6 +4,7 @@ import React from "react";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import { saveAs } from "file-saver";
 import { InvoiceTypes } from "@/lib/types/productTypes";
+import Image from "next/image";
 
 export interface InvoiceLayoutProps extends InvoiceTypes {
   logoBaseurl: string;
@@ -178,10 +179,12 @@ export default function InvoiceLayout(props: InvoiceLayoutProps) {
 
       {/* Invoice Display */}
       <div className="bg-white border border-gray-300 p-8 text-sm print:border-none print:shadow-none">
-        <img
+        <Image
           src={logoBaseurl || "/Logo.png"}
           alt="logo"
-          className="w-20 h-20 object-contain mb-6"
+          width={80} // equivalent to w-20
+          height={80} // equivalent to h-20
+          className="object-contain mb-6"
         />
 
         <div className="flex justify-between mb-6">
