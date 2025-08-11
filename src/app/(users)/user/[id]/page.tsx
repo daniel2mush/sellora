@@ -2,8 +2,8 @@ import { GetUserInformation } from '@/app/actions/userActions/userActions'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 
-export default async function UserProfile({ params }: { params: Promise<{ id: string }> }) {
-  const id = (await params).id
+export default async function UserProfile({ params }: { params: { id: string } }) {
+  const { id } = params
 
   const { userInfo: user } = await GetUserInformation(id)
 
