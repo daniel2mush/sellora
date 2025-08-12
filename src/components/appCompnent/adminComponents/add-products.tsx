@@ -210,14 +210,18 @@ export default function AddProductForm({ setOpen, products }: AddProductProps) {
       trim: true,
       lower: true,
     })}-${Date.now()}`
-    const { data } = await getSignature(timestamp, public_id)
+    const res = await getSignature(timestamp, public_id)
+
+    if (!res?.data || !res?.status) return toast.error('Cannot get Cloudinary signature')
+
+    const { signature, apiKey } = res.data as { apiKey: string; signature: string }
 
     const folder = 'sellora'
     const formData = new FormData()
     formData.append('file', file)
     formData.append('folder', folder)
-    formData.append('api_key', data.apiKey)
-    formData.append('signature', data.signature)
+    formData.append('api_key', apiKey)
+    formData.append('signature', signature)
     formData.append('timestamp', timestamp.toString())
     formData.append('public_id', public_id)
 
@@ -247,14 +251,18 @@ export default function AddProductForm({ setOpen, products }: AddProductProps) {
       trim: true,
       lower: true,
     })}-${Date.now()}`
-    const { data } = await getSignature(timestamp, public_id)
+    const res = await getSignature(timestamp, public_id)
+
+    if (!res?.data || !res?.status) return toast.error('Cannot get Cloudinary signature')
+
+    const { signature, apiKey } = res.data as { apiKey: string; signature: string }
 
     const folder = 'sellora'
     const formData = new FormData()
     formData.append('file', file)
     formData.append('folder', folder)
-    formData.append('api_key', data.apiKey)
-    formData.append('signature', data.signature)
+    formData.append('api_key', apiKey)
+    formData.append('signature', signature)
     formData.append('timestamp', timestamp.toString())
     formData.append('public_id', public_id)
 

@@ -152,13 +152,16 @@ export default function AdminProducts() {
 
   async function DeleteAssetFromCloudinary(public_id: string) {
     const timestamp = Math.floor(Date.now() / 1000)
-    const { data } = await getDeleteSignature({ timestamp, public_id })
+    const res = await getDeleteSignature({ timestamp, public_id })
+    if (!res?.data || !res?.status) return toast.error('Cannot get Cloudinary signature')
+
+    const { signature, apiKey } = res.data as { apiKey: string; signature: string }
 
     const formData = new FormData()
     formData.append('public_id', public_id)
-    formData.append('api_key', data.apiKey)
+    formData.append('api_key', apiKey)
     formData.append('timestamp', timestamp.toString())
-    formData.append('signature', data.signature)
+    formData.append('signature', signature)
 
     const cloudinaryRes = await axios.post(
       `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUD_NAME}/raw/destroy`,
