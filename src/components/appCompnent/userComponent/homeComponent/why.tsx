@@ -8,11 +8,11 @@ export default function WhyUs() {
         {/* content */}
         <div className=" grid grid-cols-1 md:grid-cols-2 gap-14 ">
           {/* First grid */}
-          <div className=" w-[400px] place-items-center space-y-5">
+          <div className=" w-[400px] flex flex-col justify-center  items-center space-y-5">
             <div>
               <ImageIcon strokeWidth={1} size={80} />
             </div>
-            <div className="place-items-center space-y-5">
+            <div className="space-y-5 flex flex-col justify-center  items-center">
               <h1 className=" text-xl font-bold">Huge Content Library</h1>
               <p className="text-muted-foreground text-center">
                 Download from millions of vectors, <br /> photos, images, and videos
@@ -20,11 +20,11 @@ export default function WhyUs() {
             </div>
           </div>
           {/* Second grid */}
-          <div className=" w-[400px] place-items-center space-y-5">
+          <div className=" w-[400px] flex flex-col justify-center  items-center  space-y-5">
             <div>
               <Album strokeWidth={1} size={80} />
             </div>
-            <div className="place-items-center space-y-5">
+            <div className=" flex flex-col justify-center  items-center space-y-5">
               <h1 className=" text-xl font-bold">Simple Licensing</h1>
               <p className="text-muted-foreground text-center">
                 Full commercial rights and no required <br /> attribution on Sellora Pro
@@ -32,11 +32,11 @@ export default function WhyUs() {
             </div>
           </div>
           {/* Third Grid */}
-          <div className=" w-[400px] place-items-center space-y-5">
+          <div className=" w-[400px] flex flex-col justify-center  items-center  space-y-5">
             <div>
               <Bubbles strokeWidth={1} size={80} />
             </div>
-            <div className="place-items-center space-y-5">
+            <div className=" flex flex-col justify-center  items-center space-y-5">
               <h1 className=" text-xl font-bold">Fresh Content</h1>
               <p className="text-muted-foreground text-center">
                 Thousands of new professional quality <br /> resources added every day
@@ -44,11 +44,11 @@ export default function WhyUs() {
             </div>
           </div>
           {/* Fourth grid */}
-          <div className=" w-[400px] place-items-center space-y-5">
+          <div className=" w-[400px] flex flex-col justify-center  items-center  space-y-5">
             <div>
               <DatabaseZap strokeWidth={1} size={80} />
             </div>
-            <div className="place-items-center space-y-5">
+            <div className=" flex flex-col justify-center  items-center space-y-5">
               <h1 className=" text-xl font-bold">Flexible Plans</h1>
               <p className="text-muted-foreground text-center">
                 Plan options to match every budget <br /> and content need{' '}
