@@ -1,129 +1,149 @@
-"use client";
+'use client'
 
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { Label } from '@/components/ui/label'
+import { Settings2, Camera, FileImage, Layers, Globe, Star, SlidersHorizontal } from 'lucide-react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useMediaQuery } from 'react-responsive'
+
+import { cn } from '@/lib/utils'
 import {
-  Settings2,
-  Camera,
-  FileImage,
-  Layers,
-  Globe,
-  Star,
-} from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
-
-import { cn } from "@/lib/utils";
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import Image from 'next/image'
+import { Button } from '@/components/ui/button'
 
 const ContentOptions = [
-  { display: "All", value: "", icon: <Globe className="w-4 h-4" /> },
-  { display: "Photos", value: "photos", icon: <Camera className="w-4 h-4" /> },
-  { display: "PNGs", value: "pngs", icon: <FileImage className="w-4 h-4" /> },
-  { display: "PSDs", value: "psds", icon: <Layers className="w-4 h-4" /> },
-  {
-    display: "Templates",
-    value: "templates",
-    icon: <Settings2 className="w-4 h-4" />,
-  },
-];
+  { display: 'All Images', value: 'all' },
+  { display: 'Photos', value: 'photo' },
+  { display: 'PNG', value: 'png' },
+  { display: 'PSD', value: 'psd' },
+  { display: 'SVG', value: 'svg' },
+  { display: 'Vector', value: 'vector' },
+
+  { display: 'Templates', value: 'template' },
+]
 
 const LicenseOptions = [
-  { display: "All", value: "", icon: <Globe className="w-4 h-4" /> },
+  { display: 'All', value: 'all', icon: <Globe className="w-4 h-4" /> },
   {
-    display: "Free License",
-    value: "freelicense",
+    display: 'Free License',
+    value: 'freelicense',
     icon: <Star className="w-4 h-4 text-yellow-500" />,
   },
   {
-    display: "Pro License",
-    value: "prolicense",
+    display: 'Pro License',
+    value: 'prolicense',
     icon: <Settings2 className="w-4 h-4 text-blue-500" />,
   },
-];
+]
 
-export default function ProductFilters({
-  setOpenFilter,
-}: {
-  setOpenFilter: () => void;
-}) {
-  const searchParams = useSearchParams();
-  const router = useRouter();
+export default function ProductFilters({ setOpenFilter }: { setOpenFilter: () => void }) {
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const isMobile = useMediaQuery({ maxWidth: 767 })
 
-  const contentType = searchParams.get("content") || "";
-  const licenseType = searchParams.get("license") || "";
+  const contentType = searchParams.get('content') || ''
 
   const handleFilterChange = (key: string, value: string) => {
-    const currentParams = new URLSearchParams(searchParams.toString());
-    currentParams.set("page", "1"); // Reset to page 1 on filter change
+    const currentParams = new URLSearchParams(searchParams.toString())
+    currentParams.set('page', '1') // Reset to page 1 on filter change
     if (value) {
-      currentParams.set(key, value);
+      currentParams.set(key, value)
     } else {
-      currentParams.delete(key);
+      currentParams.delete(key)
     }
-    setOpenFilter();
-    router.push(`?${currentParams.toString()}`);
-  };
+    setOpenFilter()
+    router.push(`?${currentParams.toString()}`)
+  }
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 max-w-md mx-auto">
+    <div className="bg-white pt-5  mx-auto">
       <div className="space-y-6">
         {/* Content Section */}
-        <div className="space-y-3 border-b pb-4">
-          <h1 className="font-semibold text-lg flex items-center gap-2">
-            <Settings2 className="w-5 h-5 text-gray-600" />
-            Content
-          </h1>
-          <RadioGroup
-            value={contentType}
-            onValueChange={(value) => handleFilterChange("content", value)}
-            className="space-y-2">
-            {ContentOptions.map((option) => (
-              <div
-                key={option.value}
-                className={cn(
-                  "flex items-center gap-3 p-2 rounded-md hover:bg-gray-100 transition-colors",
-                  contentType === option.value && "bg-gray-100"
-                )}>
-                <RadioGroupItem value={option.value} id={option.value} />
-                {option.icon}
-                <Label
-                  className="text-gray-700 cursor-pointer"
-                  htmlFor={option.value}>
-                  {option.display}
-                </Label>
-              </div>
-            ))}
-          </RadioGroup>
-        </div>
+        {isMobile ? (
+          <div className="grid grid-cols-2 gap-2">
+            <Select onValueChange={(v) => handleFilterChange('content', v)}>
+              <SelectTrigger className="w-full">
+                <SlidersHorizontal />
+                <SelectValue placeholder="Filters" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {ContentOptions.map((opt) => (
+                    <SelectItem key={opt.value} value={opt.value}>
+                      {opt.display}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
 
-        {/* License Section */}
-        <div className="space-y-3 border-b pb-4">
-          <h1 className="font-semibold text-lg flex items-center gap-2">
-            <Settings2 className="w-5 h-5 text-gray-600" />
-            License Type
-          </h1>
-          <RadioGroup
-            value={licenseType}
-            onValueChange={(value) => handleFilterChange("license", value)}
-            className="space-y-2">
-            {LicenseOptions.map((option) => (
-              <div
-                key={option.value}
-                className={cn(
-                  "flex items-center gap-3 p-2 rounded-md hover:bg-gray-100 transition-colors",
-                  licenseType === option.value && "bg-gray-100"
-                )}>
-                <RadioGroupItem value={option.value} id={option.value} />
-                {option.icon}
-                <Label
-                  className="text-gray-700 cursor-pointer"
-                  htmlFor={option.value}>
-                  {option.display}
-                </Label>
-              </div>
-            ))}
-          </RadioGroup>
-        </div>
+            <div>
+              <Select onValueChange={(v) => handleFilterChange('license', v)}>
+                <SelectTrigger className="w-full">
+                  <Image src="/license.png" alt="license icon" width={35} height={35} />
+                  <SelectValue placeholder="License" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    {LicenseOptions.map((opt) => (
+                      <SelectItem key={opt.value} value={opt.value}>
+                        {opt.display}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        ) : (
+          <div className="flex justify-between items-center">
+            <div className=" flex items-center gap-3">
+              {ContentOptions.map((option) => (
+                <Button
+                  onClick={() => handleFilterChange('content', option.value)}
+                  value={option.value}
+                  variant={'ghost'}
+                  key={option.value}
+                  className={cn(
+                    'flex items-center rounded-md hover:bg-gray-100 transition-colors',
+                    contentType === option.value && 'bg-gray-100'
+                  )}
+                >
+                  <Label className="text-gray-700 cursor-pointer" htmlFor={option.value}>
+                    {option.display}
+                  </Label>
+                </Button>
+              ))}
+            </div>
+
+            {/* License Section */}
+            <div>
+              <Select onValueChange={(v) => handleFilterChange('license', v)}>
+                <SelectTrigger className="w-full">
+                  <Image src="/license.png" alt="license icon" width={35} height={35} />
+                  <SelectValue placeholder="License" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    {LicenseOptions.map((opt) => (
+                      <SelectItem key={opt.value} value={opt.value}>
+                        {opt.display}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        )}
       </div>
     </div>
-  );
+  )
 }

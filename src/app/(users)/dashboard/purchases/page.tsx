@@ -1,7 +1,14 @@
 import { GetAllPurchasedItems } from '@/app/actions/userActions/ProductActionsUser'
+import { Button } from '@/components/ui/button'
 import { Download, FileText } from 'lucide-react'
+import { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
+
+export const metadata: Metadata = {
+  title: 'Purchases',
+  description: 'See all your purchased items',
+}
 
 export default async function Orders() {
   const { res } = await GetAllPurchasedItems()
@@ -16,12 +23,12 @@ export default async function Orders() {
     )
 
   return (
-    <div className=" mx-10 pt-10">
+    <div className=" px-10 pt-10 max-w-7xl mx-auto">
       <h1 className=" text-3xl font-bold mb-10 ">My Purchases</h1>
 
       {/* Content */}
       {res!.map(({ products, purchase, purchaseItems }) => (
-        <div key={products.id} className=" mb-6 flex justify-between items-center  gap-3">
+        <div key={products.id} className=" mb-6 grid grid-cols-1 md:grid-cols-2 gap-3">
           <div className=" flex items-center gap-4">
             {/* Image */}
             <div className=" relative w-[200px] h-[150px]  rounded overflow-hidden">
@@ -40,11 +47,11 @@ export default async function Orders() {
           </div>
 
           {/* Buttons */}
-          <div className=" flex items-center justify-center gap-3  ">
+          <div className=" flex items-center justify-center gap-3 mx-auto   ">
             <div>
-              <button
+              <Button
                 type="submit"
-                className=" cursor-pointer bg-green-600 w-full rounded text-white"
+                // className=" cursor-pointer bg-green-600 w-full rounded text-white"
               >
                 <a
                   href={`/api/download/${products.id}`}
@@ -57,16 +64,18 @@ export default async function Orders() {
                     <Download size={15} /> Download
                   </div>
                 </a>
-              </button>
+              </Button>
             </div>
 
-            <Link
-              href={`/invoice/${purchase.id}`}
-              className=" flex justify-center items-center w-[50%] gap-3 py-2 px-5  border rounded p-1"
-            >
-              <FileText />
-              Invoice
-            </Link>
+            <Button variant={'outline'}>
+              <Link
+                href={`/invoice/${purchase.id}`}
+                className=" flex justify-center items-center gap-3"
+              >
+                <FileText />
+                Invoice
+              </Link>
+            </Button>
           </div>
         </div>
       ))}

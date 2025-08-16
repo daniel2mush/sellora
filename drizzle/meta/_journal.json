@@ -15,6 +15,13 @@
       "when": 1754148992093,
       "tag": "0001_lonely_gateway",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1755111116734,
+      "tag": "0002_solid_shooting_star",
+      "breakpoints": true
     }
   ]
 }

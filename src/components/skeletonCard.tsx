@@ -1,8 +1,8 @@
 // components/SkeletonCard.jsx
-"use client";
+'use client'
 
-import { Skeleton } from "./ui/skeleton";
-import { TableCell, TableRow } from "./ui/table";
+import { Skeleton } from './ui/skeleton'
+import { TableCell, TableRow } from './ui/table'
 
 function SkeletonCard() {
   return (
@@ -21,15 +21,15 @@ function SkeletonCard() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default SkeletonCard;
+export default SkeletonCard
 
 /// Admin payments skeleton
 
 export const SkeletonRow = ({ index }: { index: number }) => (
-  <TableRow className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+  <TableRow className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
     <TableCell>
       <Skeleton className="h-10 w-10 rounded-full animate-shimmer" />
     </TableCell>
@@ -55,4 +55,4 @@ export const SkeletonRow = ({ index }: { index: number }) => (
       <Skeleton className="h-4 w-[100px] animate-shimmer" />
     </TableCell>
   </TableRow>
-);
+)

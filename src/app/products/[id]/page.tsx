@@ -12,10 +12,20 @@ import { auth } from '@/lib/auth'
 import { productWithUser } from '@/lib/types/productTypes'
 import { AvatarImage } from '@radix-ui/react-avatar'
 import { CircleAlert, Download, FileText, Shapes, Share, UserPlus } from 'lucide-react'
+import { Metadata } from 'next'
 import { headers } from 'next/headers'
 import Image from 'next/image'
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
+
+export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
+  const product = (await GetSingleProductActions(params.id)) as productWithUser
+
+  return {
+    title: product.products.title,
+    description: product.products.description,
+  }
+}
 
 export default async function ProductDetails({
   params,
@@ -105,22 +115,24 @@ export default async function ProductDetails({
           {/* Sidebar Section */}
           <div className="lg:sticky lg:top-20 self-start bg-white rounded-2xl shadow-lg p-6 space-y-6">
             {/* Author Profile */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <Avatar className="w-12 h-12 ring-2 ring-gray-200">
-                  <AvatarImage src={product.user.image as string} alt={product.user.name} />
-                  <AvatarFallback>{product.user.name.charAt(0)}</AvatarFallback>
-                </Avatar>
-                <div>
-                  <h2 className="font-semibold text-lg text-gray-900">{product.user.name}</h2>
-                  <p className="text-sm text-gray-500">{count} Resources</p>
+            <Link href={`/profile/${product.user.id}?content=all`}>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <Avatar className="w-12 h-12 ring-2 ring-gray-200">
+                    <AvatarImage src={product.user.image as string} alt={product.user.name} />
+                    <AvatarFallback>{product.user.name.charAt(0)}</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <h2 className="font-semibold text-lg text-gray-900">{product.user.name}</h2>
+                    <p className="text-sm text-gray-500">{count} Resources</p>
+                  </div>
                 </div>
+                <Button variant="ghost" className="hover:bg-gray-100 transition-colors">
+                  <UserPlus size={20} className="mr-2" />
+                  Follow
+                </Button>
               </div>
-              <Button variant="ghost" className="hover:bg-gray-100 transition-colors">
-                <UserPlus size={20} className="mr-2" />
-                Follow
-              </Button>
-            </div>
+            </Link>
 
             {/* Action Buttons */}
             <div className="space-y-4">
@@ -161,23 +173,25 @@ export default async function ProductDetails({
                     <p className="text-sm text-gray-500">You cannot purchase your own product.</p>
                   </div>
                 ) : isFree ? (
-                  <Button
-                    asChild
-                    className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg"
-                  >
-                    <a
-                      href={`/api/download/free/${id}`}
-                      target="_blank"
-                      download
-                      className="flex flex-col items-center justify-center"
+                  <div>
+                    <Button
+                      asChild
+                      className="w-full h-12 bg-green-600 hover:bg-green-700 text-white font-bold text-lg mt-10"
                     >
-                      <div className="flex items-center gap-2">
-                        <Download size={20} />
-                        Download Now
-                      </div>
-                      <p className="text-xs text-blue-100">Attribution required</p>
-                    </a>
-                  </Button>
+                      <a
+                        href={`/api/download/free/${id}`}
+                        target="_blank"
+                        download
+                        className="flex flex-col items-center justify-center"
+                      >
+                        <div className="flex items-center gap-2">
+                          <Download size={20} />
+                          Download Now
+                        </div>
+                      </a>
+                    </Button>
+                    <p className="text-xs text-gray-600 text-center mt-2">Attribution required</p>
+                  </div>
                 ) : (
                   <div className="space-y-4">
                     <div className="text-center">

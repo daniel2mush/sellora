@@ -2,7 +2,7 @@ import { Album, Bubbles, DatabaseZap, Image as ImageIcon } from 'lucide-react'
 
 export default function WhyUs() {
   return (
-    <div className=" min-h-screen flex items-center justify-center">
+    <div className=" my-20 flex items-center justify-center max-w-7xl mx-auto">
       <div>
         <h1 className="text-3xl font-bold font-stretch-90% text-center mb-6">Why us</h1>
         {/* content */}

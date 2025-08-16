@@ -1,6 +1,6 @@
-"use client";
+'use client'
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,39 +9,39 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Compass, DollarSign, FolderHeart, LogOut, User } from "lucide-react";
-import { signOut, useSession } from "@/lib/authClient";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import Link from "next/link";
-import { Skeleton } from "@/components/ui/skeleton";
-import { BecomeSellerDialog } from "../../SellerDialog/SellerDialog";
-import { useState } from "react";
+} from '@/components/ui/dropdown-menu'
+import { Compass, DollarSign, FolderHeart, LogOut, User } from 'lucide-react'
+import { signOut, useSession } from '@/lib/authClient'
+import { toast } from 'sonner'
+import { useRouter } from 'next/navigation'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import Link from 'next/link'
+import { Skeleton } from '@/components/ui/skeleton'
+import { BecomeSellerDialog } from '../../SellerDialog/SellerDialog'
+import { useState } from 'react'
 
 export default function UserMenu() {
-  const router = useRouter();
-  const { data: session, isPending } = useSession();
-  const [open, setOpen] = useState(false);
+  const router = useRouter()
+  const { data: session, isPending } = useSession()
+  const [open, setOpen] = useState(false)
 
   const handleLogout = async () => {
     try {
-      const { data, error } = await signOut();
+      const { data, error } = await signOut()
       if (data?.success) {
-        toast.success("Logged out successfully");
-        router.refresh();
+        toast.success('Logged out successfully')
+        router.refresh()
       } else {
-        toast.error(error?.message || "Logout failed");
+        toast.error(error?.message || 'Logout failed')
       }
     } catch (e) {
-      console.error(e);
-      toast.error("An unexpected error occurred");
+      console.error(e)
+      toast.error('An unexpected error occurred')
     }
-  };
+  }
 
   if (isPending) {
-    return <Skeleton className="h-10 w-10 rounded-full" />;
+    return <Skeleton className="h-10 w-10 rounded-full" />
   }
 
   if (!session?.user) {
@@ -49,21 +49,16 @@ export default function UserMenu() {
       <Button variant="default" asChild>
         <Link href="/auth">Login</Link>
       </Button>
-    );
+    )
   }
 
   return (
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            className="relative h-10 w-10 rounded-full p-0">
+          <Button variant="ghost" className="relative h-10 w-10 rounded-full p-0">
             <Avatar className="h-10 w-10">
-              <AvatarImage
-                src={session.user.image as string}
-                alt={session.user.name}
-              />
+              <AvatarImage src={session.user.image as string} alt={session.user.name} />
               <AvatarFallback className="bg-amber-700 text-white">
                 {session.user.name.charAt(0).toUpperCase()}
               </AvatarFallback>
@@ -73,18 +68,14 @@ export default function UserMenu() {
         <DropdownMenuContent className="w-56" align="end" forceMount>
           <DropdownMenuLabel className="font-normal">
             <div className="flex flex-col space-y-1">
-              <p className="text-sm font-medium leading-none">
-                {session.user.name}
-              </p>
-              <p className="text-xs leading-none text-muted-foreground">
-                {session.user.email}
-              </p>
+              <p className="text-sm font-medium leading-none">{session.user.name}</p>
+              <p className="text-xs leading-none text-muted-foreground">{session.user.email}</p>
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem asChild>
-              <Link href="/profile">
+              <Link href={`/profile/${session.user.id}?content=all`}>
                 <User className="mr-2 h-4 w-4" />
                 <span>Profile</span>
               </Link>
@@ -129,5 +120,5 @@ export default function UserMenu() {
         />
       )}
     </>
-  );
+  )
 }

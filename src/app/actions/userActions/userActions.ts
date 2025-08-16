@@ -2,7 +2,7 @@
 
 import { auth } from '@/lib/auth'
 import { db } from '@/lib/db'
-import { user } from '@/lib/db/schema'
+import { assets, products, user } from '@/lib/db/schema'
 import { and, eq } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
 import { headers } from 'next/headers'
@@ -46,20 +46,30 @@ export const SetUserToAdminActions = async (userId: string) => {
   }
 }
 
-export async function GetUserInformation(userId: string) {
-  // const session = await auth.api.getSession({
-  //   headers: await headers()
-  // });
+export type searchQueryProps = 'psd' | 'photo' | 'png' | 'svg' | 'template' | 'vector'
+
+export async function GetUserInformation(userId: string, content?: searchQueryProps) {
+  const filters = [eq(products.userId, userId)]
+
+  if (content) {
+    filters.push(eq(assets.category, content))
+  }
 
   try {
     const [userInfo] = await db
       .select()
       .from(user)
-      .where(and(eq(user.id, userId), eq(user.username, userId)))
+      .where(and(eq(user.id, userId)))
+
+    const product = await db
+      .select()
+      .from(products)
+      .leftJoin(assets, eq(assets.productId, products.id))
+      .where(and(...filters))
 
     return {
       status: true,
-      userInfo,
+      user: { userInfo, product },
     }
   } catch (error) {
     console.log(error)

@@ -1,8 +1,7 @@
 // components/ProductPage.jsx
-"use client";
+'use client'
 
-import { useRouter, useSearchParams } from "next/navigation";
-import dynamic from "next/dynamic";
+import { useSearchParams } from 'next/navigation'
 import {
   Pagination,
   PaginationContent,
@@ -11,105 +10,82 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/pagination";
-import { paginationData, productWithUser } from "@/lib/types/productTypes";
-import { useQuery } from "@tanstack/react-query";
-import { fetchAllProducts } from "@/lib/utils/queryFuntions";
-import SkeletonCard from "@/components/skeletonCard";
-
-const MasonryGrid = dynamic(() => import("./mansonry-grid"), {
-  ssr: false,
-});
+} from '@/components/ui/pagination'
+import { paginationData, productWithUser } from '@/lib/types/productTypes'
+import { useQuery } from '@tanstack/react-query'
+import { fetchAllProducts, likeMutation } from '@/lib/utils/queryFuntions'
+import MasonryGridSkeleton from '@/components/skeletonCard'
+import { getPageNumbers, handlePageChange } from './productFun'
+import MasonryGrid from './mansonry-grid'
 
 interface productPageProps {
-  products: productWithUser[];
-  paginationData: paginationData;
+  products: productWithUser[]
+  paginationData: paginationData
 }
 
 export function UserProducts() {
-  const searchParams = useSearchParams();
-  const searchString = searchParams.toString();
+  const searchParams = useSearchParams()
+  const searchString = searchParams.toString()
+  const license = searchParams.get('license')
 
   const { data, isLoading } = useQuery<productPageProps>({
-    queryKey: ["products", searchString],
+    queryKey: ['products', searchString],
     queryFn: () => fetchAllProducts(searchString),
-  });
-  const router = useRouter();
+  })
 
-  const searchValue = searchParams.get("content");
+  const searchValue = searchParams.get('content')
 
   if (isLoading) {
     return (
-      <div className="px-4 md:px-10 w-full pt-10">
-        <h1 className="text-4xl font-bold text-center mb-10">
-          Explore our products
-        </h1>
+      <div className="px-4 md:px-10 w-full pt-10 max-w-7xl mx-auto">
         <div className="w-full">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {[...Array(6)].map((_, i) => (
-              <SkeletonCard key={i} />
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+            {[...Array(12)].map((_, i) => (
+              <MasonryGridSkeleton key={i} />
             ))}
           </div>
         </div>
       </div>
-    );
+    )
   }
 
-  const { products, paginationData: pagination } = data!;
-  const { currentPage, totalPages } = pagination;
+  const { products, paginationData: pagination } = data!
+  const { currentPage, totalPages } = pagination
 
-  const handlePageChange = (newPage: number) => {
-    const currentParams = new URLSearchParams(searchParams.toString());
-    currentParams.set("page", newPage.toString());
-    router.push(`?${currentParams.toString()}`);
-  };
+  let productCopy = [...products] as productWithUser[]
 
-  const getPageNumbers = () => {
-    const pages: (number | "ellipsis")[] = [];
-    const startPage = Math.max(2, currentPage - 2);
-    const endPage = Math.min(totalPages - 1, currentPage + 2);
-
-    pages.push(1);
-    if (startPage > 2) pages.push("ellipsis");
-    for (let i = startPage; i <= endPage; i++) pages.push(i);
-    if (endPage < totalPages - 1) pages.push("ellipsis");
-    if (totalPages > 1) pages.push(totalPages);
-
-    return pages;
-  };
+  if (license === 'freelicense') {
+    productCopy = productCopy.filter((p) => p.products.price <= 0)
+  } else if (license === 'prolicense') {
+    productCopy = productCopy.filter((p) => p.products.price > 0)
+  }
 
   if (!data)
     return (
       <div className=" flex justify-center items-center min-h-[60hv] font-bold text-2xl;">
         No data
       </div>
-    );
+    )
 
   return (
-    <div className="px-4 md:px-10 w-full pt-10">
-      {/* <h1 className="text-4xl font-bold text-center mb-10">
-        Explore our products
-      </h1> */}
-
+    <div className="px-4 md:px-10 w-full pt-10 max-w-7xl mx-auto">
       {/* Masonry Grid */}
-      <MasonryGrid searchQuery={searchValue as string} products={products} />
+      <div className=" min-h-[40vh]">
+        <MasonryGrid searchQuery={searchValue as string} products={productCopy} />
+      </div>
 
       {/* Pagination Controls */}
       <Pagination className="py-10">
         <PaginationContent className="justify-center mt-10">
           <PaginationItem>
             <PaginationPrevious
-              onClick={() => handlePageChange(currentPage - 1)}
+              onClick={() => handlePageChange(currentPage - 1, searchParams.toString())}
               aria-disabled={currentPage === 1}
-              className={
-                currentPage === 1
-                  ? "pointer-events-none opacity-50"
-                  : "cursor-pointer"
-              }
+              className={currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
             />
           </PaginationItem>
-          {getPageNumbers().map((page, index) =>
-            page === "ellipsis" ? (
+          {getPageNumbers({ currentPage, totalPages }).map((page, index) =>
+            page === 'ellipsis' ? (
               <PaginationItem key={`ellipsis-${index}`}>
                 <PaginationEllipsis />
               </PaginationItem>
@@ -117,9 +93,10 @@ export function UserProducts() {
               <PaginationItem key={page}>
                 <PaginationLink
                   className="cursor-pointer"
-                  onClick={() => handlePageChange(page)}
+                  onClick={() => handlePageChange(page, searchParams.toString())}
                   isActive={page === currentPage}
-                  aria-current={page === currentPage ? "page" : undefined}>
+                  aria-current={page === currentPage ? 'page' : undefined}
+                >
                   {page}
                 </PaginationLink>
               </PaginationItem>
@@ -127,17 +104,15 @@ export function UserProducts() {
           )}
           <PaginationItem>
             <PaginationNext
-              onClick={() => handlePageChange(currentPage + 1)}
+              onClick={() => handlePageChange(currentPage + 1, searchParams.toString())}
               aria-disabled={currentPage === totalPages}
               className={
-                currentPage === totalPages
-                  ? "pointer-events-none opacity-50"
-                  : "cursor-pointer"
+                currentPage === totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'
               }
             />
           </PaginationItem>
         </PaginationContent>
       </Pagination>
     </div>
-  );
+  )
 }

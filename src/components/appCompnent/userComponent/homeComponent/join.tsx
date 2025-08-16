@@ -1,23 +1,23 @@
-import { Check } from "lucide-react";
-import Image from "next/image";
+import { Check } from 'lucide-react'
+import Image from 'next/image'
 
 export default function JoinToday() {
   const stringList = [
-    "Millions of Pro only resources",
-    "Unlimited downloads",
-    "Full commerical rights",
-    "No attribution required",
-    "Download bundles and collections",
-    "Faster downloads and no ads",
-    "Priority support",
-  ];
+    'Millions of Pro only resources',
+    'Unlimited downloads',
+    'Full commerical rights',
+    'No attribution required',
+    'Download bundles and collections',
+    'Faster downloads and no ads',
+    'Priority support',
+  ]
   return (
-    <div className=" px-10 my-10 ">
+    <div className=" px-10 my-10 max-w-7xl mx-auto ">
       <div className=" grid grid-cols-1 lg:grid-cols-2">
         {/* Frist div */}
         <div className=" relative aspect-video rounded-2xl overflow-clip">
           <Image
-            src={"/joinUs.jpg"}
+            src={'https://res.cloudinary.com/dybyeiofb/image/upload/v1755277656/joinUs_s0lczx.jpg'}
             alt="join-us"
             fill
             className="object-cover"
@@ -27,10 +27,7 @@ export default function JoinToday() {
         {/* Second div */}
         <div className=" mt-10 lg:mt-0 lg:pl-10 ">
           <div>
-            <h1 className="text-3xl font-bold  mb-6">
-              {" "}
-              Join Sellora pro Today
-            </h1>
+            <h1 className="text-3xl font-bold  mb-6"> Join Sellora pro Today</h1>
           </div>
           <div className=" space-y-4">
             {stringList.map((l, i) => (
@@ -45,5 +42,5 @@ export default function JoinToday() {
         </div>
       </div>
     </div>
-  );
+  )
 }

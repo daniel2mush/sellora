@@ -1,35 +1,32 @@
-"use client";
+'use client'
 
-import MobileNavigation from "./mobile";
-import DesktopNavigation from "./desktop";
-import { useEffect, useState } from "react";
-import { useSession } from "@/lib/authClient";
+import MobileNavigation from './mobile'
+import DesktopNavigation from './desktop'
+import { useEffect, useState } from 'react'
+import { useSession } from '@/lib/authClient'
+import { useMediaQuery } from 'react-responsive'
+import Footer from '../homeComponent/footer'
 
 export function NavigationWrapper({ children }: { children: React.ReactNode }) {
-  const [isMobile, setIsMobile] = useState(false);
-  const { data: session } = useSession();
+  const { data: session } = useSession()
+  const isMobile = useMediaQuery({ maxWidth: 767 })
 
-  const [isMounted, setIsMounted] = useState(false);
+  const [isMounted, setIsMounted] = useState(false)
 
   useEffect(() => {
-    function Checker() {
-      setIsMobile(window.innerWidth <= 767);
-    }
-    Checker();
-    setIsMounted(true);
-    // listener
-    window.addEventListener("resize", Checker);
-    // clean up
-    return () => window.removeEventListener("resize", Checker);
-  }, []);
+    setIsMounted(true)
+  }, [])
 
-  if (!isMounted) return null;
+  if (!isMounted) return null
 
-  const isUser = session?.user.role !== "admin";
+  console.log(isMobile, 'Is mobile now')
+
+  const isUser = session?.user.role !== 'admin'
   return (
     <section>
       {isUser && isMobile ? <MobileNavigation /> : <DesktopNavigation />}
-      {children}
+      <main className=" min-h-screen">{children}</main>
+      <Footer />
     </section>
-  );
+  )
 }
