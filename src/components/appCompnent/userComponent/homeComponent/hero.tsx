@@ -39,7 +39,7 @@ export default function HeroSection() {
             <div className="bg-black p-3 h-full w-50 text-white flex items-center justify-center">
               <div className="relative w-20 md:w-32 h-16">
                 <Image
-                  src="/Logo.png"
+                  src="https://res.cloudinary.com/dybyeiofb/image/upload/v1755276942/Logo_bbchps.png"
                   alt="logo"
                   fill
                   className="filter invert dark:invert-0 object-contain"

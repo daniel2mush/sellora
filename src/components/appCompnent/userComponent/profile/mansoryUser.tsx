@@ -40,7 +40,10 @@ function ProductCard({ product }: { product: productWithAsset }) {
 
   const formattedDate = createdAt ? format(new Date(createdAt), 'MMM dd, yyyy') : 'Unknown date'
   const status = isPublished ? 'Published' : 'Draft'
-  const licenseIcon = price > 0 ? '/license.png' : null
+  const licenseIcon =
+    price > 0
+      ? 'https://res.cloudinary.com/dybyeiofb/image/upload/v1755276954/license_nmcngm.png'
+      : null
 
   return (
     <Link

@@ -1,5 +1,5 @@
-import Image from "next/image";
-import Link from "next/link";
+import Image from 'next/image'
+import Link from 'next/link'
 
 export default function Footer() {
   return (
@@ -9,15 +9,15 @@ export default function Footer() {
         <div>
           <div className="  relative w-20 md:w-32  h-16">
             <Image
-              src={"/Logo.png"}
+              src={'https://res.cloudinary.com/dybyeiofb/image/upload/v1755276942/Logo_bbchps.png'}
               alt="logo"
               fill
               className=" filter invert dark:invert-0 object-contain"
             />
           </div>
           <p className="text-sm">
-            Your digital marketplace for creative assets. Buy, sell, and
-            discover high-quality products.
+            Your digital marketplace for creative assets. Buy, sell, and discover high-quality
+            products.
           </p>
         </div>
 
@@ -73,9 +73,7 @@ export default function Footer() {
         {/* Newsletter */}
         <div>
           <h3 className="text-white font-semibold mb-3">Subscribe</h3>
-          <p className="text-sm mb-3">
-            Get updates on new products and offers.
-          </p>
+          <p className="text-sm mb-3">Get updates on new products and offers.</p>
           <form className="flex flex-col sm:flex-row gap-2">
             <input
               type="email"
@@ -84,7 +82,8 @@ export default function Footer() {
             />
             <button
               type="submit"
-              className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-md">
+              className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-md"
+            >
               Subscribe
             </button>
           </form>
@@ -95,5 +94,5 @@ export default function Footer() {
         © {new Date().getFullYear()} Sellora. All rights reserved.
       </div>
     </footer>
-  );
+  )
 }

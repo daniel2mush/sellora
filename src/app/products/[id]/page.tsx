@@ -135,7 +135,7 @@ export default async function ProductDetails({
             </Link>
 
             {/* Action Buttons */}
-            <div className="space-y-4">
+            <div className="space-y-4 mt-10">
               {isLoggedIn ? (
                 isAlreadyPurchased ? (
                   <>

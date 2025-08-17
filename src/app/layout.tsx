@@ -5,6 +5,9 @@ import { Providers } from '@/components/providers/provider'
 import { NavigationWrapper } from '@/components/appCompnent/userComponent/navigation/navigationWrapper'
 import ClientToaster from '@/components/appCompnent/ClientToaster'
 import Footer from '@/components/appCompnent/userComponent/homeComponent/footer'
+import { auth } from '@/lib/auth'
+import { headers } from 'next/headers'
+import { redirect } from 'next/navigation'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -30,7 +33,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  // const isUser = session?.user.role !== "admin";
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>

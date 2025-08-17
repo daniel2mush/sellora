@@ -8,8 +8,18 @@ import { productWithUser } from '@/lib/types/productTypes'
 import { Download, Shapes, Heart } from 'lucide-react' // Added Heart for like button
 import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip' // Added for tooltips
-import { likeMutation, UnLikeMutation, useLikeProduct } from '@/lib/utils/queryFuntions'
 import { useState } from 'react'
+import { uselikeMutation, useLikeProduct, useUnLikeMutation } from '@/lib/utils/queryFuntions'
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
+import AddToCollection from '../collection/addToCollection'
+import { DialogClose } from '@radix-ui/react-dialog'
 
 export default function MasonryGrid({
   products,
@@ -39,13 +49,11 @@ export default function MasonryGrid({
 }
 
 function ProductCard({ data }: { data: productWithUser }) {
-  const { mutate: Like } = likeMutation()
-  const { mutate: UnLike } = UnLikeMutation()
+  const { mutate: Like } = uselikeMutation()
+  const { mutate: UnLike } = useUnLikeMutation()
   const { data: LikedProductsData, isLoading } = useLikeProduct()
 
   if (isLoading) return
-
-  console.log(LikedProductsData)
 
   const likedProduct = LikedProductsData as { productId: string }[]
   let isLiked = new Set()
@@ -55,7 +63,10 @@ function ProductCard({ data }: { data: productWithUser }) {
     isLiked = MyLikes
   }
 
-  const licenseIcon = data.products.price > 0 ? '/license.png' : null
+  const licenseIcon =
+    data.products.price > 0
+      ? 'https://res.cloudinary.com/dybyeiofb/image/upload/v1755276954/license_nmcngm.png'
+      : null
 
   const LikedProduct = isLiked.has(data.products.id)
   return (
@@ -82,13 +93,27 @@ function ProductCard({ data }: { data: productWithUser }) {
         <div className="absolute top-3 left-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button
-                className="bg-white/90 text-gray-800 hover:bg-white/100 hover:scale-105 transition-all shadow-md"
-                size="icon"
-                onClick={() => console.log('Add to Collection', data.products.id)}
-              >
-                <Shapes size={18} />
-              </Button>
+              <Dialog>
+                <DialogHeader>
+                  <DialogTrigger asChild>
+                    <Button
+                      className="bg-white/90 text-gray-800 hover:bg-white/100 hover:scale-105 transition-all shadow-md"
+                      size="icon"
+                    >
+                      <Shapes size={18} />
+                    </Button>
+                  </DialogTrigger>
+                </DialogHeader>
+                <DialogContent>
+                  <DialogTitle className=" sr-only"> Add To Collection</DialogTitle>
+                  <AddToCollection productId={data.products.id} />
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button className=" bg-indigo-700 w-full">Save</Button>
+                    </DialogClose>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </TooltipTrigger>
             <TooltipContent side="right">Add to Collection</TooltipContent>
           </Tooltip>

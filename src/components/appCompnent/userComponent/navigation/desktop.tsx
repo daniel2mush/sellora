@@ -45,6 +45,8 @@ export default function DesktopNavigation() {
 
   if (session?.user.role === 'admin') return null
 
+  const isExplore = pathname === navMenu[1].path
+
   return (
     <header
       className={cn(
@@ -55,30 +57,52 @@ export default function DesktopNavigation() {
       <div className="container mx-auto flex items-center justify-between h-16 px-4 md:px-10 max-w-7xl">
         {/* Logo */}
         <Link href="/" className="relative w-20 md:w-32 h-10">
-          <Image src="/Logo.png" alt="Logo" fill className="object-contain" priority />
+          <Image
+            src="https://res.cloudinary.com/dybyeiofb/image/upload/v1755276942/Logo_bbchps.png"
+            alt="Logo"
+            fill
+            className="object-contain"
+            priority
+          />
         </Link>
 
         {/* Menu */}
         <nav className="hidden md:block">
           <ul className="flex items-center gap-6">
-            {navMenu.map((item) => {
-              const isActive = pathname === item.path
-              return (
-                <li key={item.name}>
-                  <Link
-                    href={item.path}
-                    className={cn(
-                      'text-sm font-medium transition-colors hover:text-primary',
-                      isActive
-                        ? 'text-primary border-b-2 border-primary pb-1'
-                        : 'text-muted-foreground'
-                    )}
-                  >
-                    {item.name}
-                  </Link>
-                </li>
-              )
-            })}
+            {session ? (
+              <li key={navMenu[1].name}>
+                <Link
+                  href={navMenu[1].path}
+                  className={cn(
+                    'text-sm font-medium transition-colors hover:text-primary',
+                    isExplore
+                      ? 'text-primary border-b-2 border-primary pb-1'
+                      : 'text-muted-foreground'
+                  )}
+                >
+                  {navMenu[1].name}
+                </Link>
+              </li>
+            ) : (
+              navMenu.map((item) => {
+                const isActive = pathname === item.path
+                return (
+                  <li key={item.name}>
+                    <Link
+                      href={item.path}
+                      className={cn(
+                        'text-sm font-medium transition-colors hover:text-primary',
+                        isActive
+                          ? 'text-primary border-b-2 border-primary pb-1'
+                          : 'text-muted-foreground'
+                      )}
+                    >
+                      {item.name}
+                    </Link>
+                  </li>
+                )
+              })
+            )}
             {session?.user &&
               navSession.map((item) => {
                 const isActive = pathname === item.path

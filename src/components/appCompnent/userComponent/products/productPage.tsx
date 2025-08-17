@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/pagination'
 import { paginationData, productWithUser } from '@/lib/types/productTypes'
 import { useQuery } from '@tanstack/react-query'
-import { fetchAllProducts, likeMutation } from '@/lib/utils/queryFuntions'
+import { fetchAllProducts } from '@/lib/utils/queryFuntions'
 import MasonryGridSkeleton from '@/components/skeletonCard'
 import { getPageNumbers, handlePageChange } from './productFun'
 import MasonryGrid from './mansonry-grid'

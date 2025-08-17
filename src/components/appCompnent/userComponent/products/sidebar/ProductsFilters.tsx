@@ -87,7 +87,12 @@ export default function ProductFilters({ setOpenFilter }: { setOpenFilter: () =>
             <div>
               <Select onValueChange={(v) => handleFilterChange('license', v)}>
                 <SelectTrigger className="w-full">
-                  <Image src="/license.png" alt="license icon" width={35} height={35} />
+                  <Image
+                    src="https://res.cloudinary.com/dybyeiofb/image/upload/v1755276954/license_nmcngm.png"
+                    alt="license icon"
+                    width={35}
+                    height={35}
+                  />
                   <SelectValue placeholder="License" />
                 </SelectTrigger>
                 <SelectContent>
@@ -127,7 +132,12 @@ export default function ProductFilters({ setOpenFilter }: { setOpenFilter: () =>
             <div>
               <Select onValueChange={(v) => handleFilterChange('license', v)}>
                 <SelectTrigger className="w-full">
-                  <Image src="/license.png" alt="license icon" width={35} height={35} />
+                  <Image
+                    src="https://res.cloudinary.com/dybyeiofb/image/upload/v1755276954/license_nmcngm.png"
+                    alt="license icon"
+                    width={35}
+                    height={35}
+                  />
                   <SelectValue placeholder="License" />
                 </SelectTrigger>
                 <SelectContent>

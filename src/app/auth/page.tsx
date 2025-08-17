@@ -21,7 +21,7 @@ export default function AuthPage() {
   }
 
   const backgroundStyle: React.CSSProperties = {
-    backgroundImage: `url(${getImageUrl('Background9.jpg')})`,
+    backgroundImage: `url(https://res.cloudinary.com/dybyeiofb/image/upload/v1755277663/Background9_pxnhvr.jpg)`,
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
     backgroundPosition: 'center',
@@ -49,7 +49,7 @@ export default function AuthPage() {
               variant="outline"
             >
               <Image
-                src={getImageUrl('google-logo.png')}
+                src={`https://res.cloudinary.com/dybyeiofb/image/upload/v1755276939/google-logo_qxfrig.png`}
                 alt="Google logo"
                 height={20}
                 width={20}

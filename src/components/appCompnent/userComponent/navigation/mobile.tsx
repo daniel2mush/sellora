@@ -76,7 +76,13 @@ export default function MobileNavigation() {
             <SheetHeader className="mb-6">
               <DialogTitle className="sr-only">Main navigation menu</DialogTitle>
               <div className="relative w-32 h-10">
-                <Image src="/Logo.png" alt="Logo" fill className="object-contain" priority />
+                <Image
+                  src="https://res.cloudinary.com/dybyeiofb/image/upload/v1755276942/Logo_bbchps.png"
+                  alt="Logo"
+                  fill
+                  className="object-contain"
+                  priority
+                />
               </div>
             </SheetHeader>
             <nav className="flex flex-col space-y-2">
@@ -112,7 +118,13 @@ export default function MobileNavigation() {
         </Sheet>
 
         <Link href="/" className="relative w-28 h-8">
-          <Image src="/Logo.png" alt="Logo" fill className="object-contain" priority />
+          <Image
+            src="https://res.cloudinary.com/dybyeiofb/image/upload/v1755276942/Logo_bbchps.png"
+            alt="Logo"
+            fill
+            className="object-contain"
+            priority
+          />
         </Link>
 
         <UserMenu />
