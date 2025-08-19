@@ -16,6 +16,10 @@ export default function ProductHeader() {
   const lastScrollY = useRef(0)
   const [show, setShow] = useState(true)
 
+  if (openFilters) {
+    console.log('open')
+  }
+
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY

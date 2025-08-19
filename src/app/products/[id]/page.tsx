@@ -18,8 +18,13 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 
-export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
-  const product = (await GetSingleProductActions(params.id)) as productWithUser
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}): Promise<Metadata> {
+  const { id } = await params
+  const product = (await GetSingleProductActions(id)) as productWithUser
 
   return {
     title: product.products.title,
