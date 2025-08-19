@@ -4,10 +4,6 @@ import './globals.css'
 import { Providers } from '@/components/providers/provider'
 import { NavigationWrapper } from '@/components/appCompnent/userComponent/navigation/navigationWrapper'
 import ClientToaster from '@/components/appCompnent/ClientToaster'
-import Footer from '@/components/appCompnent/userComponent/homeComponent/footer'
-import { auth } from '@/lib/auth'
-import { headers } from 'next/headers'
-import { redirect } from 'next/navigation'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',

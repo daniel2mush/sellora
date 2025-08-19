@@ -10,7 +10,7 @@ export async function POST(request: NextRequest) {
       message: 'Please provide a product Id',
     })
 
-  const data = await UnLikeProductAction(product.productId)
+  await UnLikeProductAction(product.productId)
 
   return NextResponse.json({
     status: true,

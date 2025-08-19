@@ -4,7 +4,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { getImageUrl } from '@/lib/shared/get-image'
 import Image from 'next/image'
 import { signIn } from '@/lib/authClient'
 import LoginForm from './loginForm'

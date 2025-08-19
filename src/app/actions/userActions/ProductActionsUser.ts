@@ -273,15 +273,6 @@ export async function HasPurchasedHistory(productId: string) {
 }
 
 export async function GetTrendingImagesAction() {
-  interface trendingProps {
-    product_id: string
-    title: string
-    thumbnail_url: string
-  }
-
-  interface trending {
-    rows: trendingProps[]
-  }
   try {
     const trendingProducts = await db.execute(
       sql`
@@ -380,6 +371,8 @@ export const GetLikedProductAction = async () => {
 
     return likedProducts
   } catch (error) {
+    console.log(error)
+
     return []
   }
 }

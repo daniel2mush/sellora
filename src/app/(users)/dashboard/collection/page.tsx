@@ -1,6 +1,5 @@
 'use client'
 
-import { GetSingleProductActions } from '@/app/actions/userActions/ProductActionsUser'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -10,17 +9,10 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { CardHeader, CardTitle } from '@/components/ui/card'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,7 +22,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
 import { Skeleton } from '@/components/ui/skeleton'
-import { collectionCProps, CollectionsWithCount } from '@/lib/types/collectionTypes'
+import { CollectionsWithCount } from '@/lib/types/collectionTypes'
 import {
   useCreateCollection,
   useDeleteCollection,
@@ -46,12 +38,6 @@ export default function Collections() {
   const [open, setOpen] = useState(false)
 
   if (isLoading) return <CollectionSkeleton />
-
-  console.log(data, 'Collections')
-
-  if (!data) return
-
-  console.log(data, 'Recived datat')
 
   return (
     <div className=" w-full max-w-6xl mx-auto my-10 px-10">
@@ -72,8 +58,14 @@ export default function Collections() {
         </Dialog>
       </div>
       {/* Collection Grids */}
+
+      {data!.collectionsWithCounts.length <= 0 && (
+        <div className=" flex justify-center items-center min-h-[60vh] font-medium text-gray-500">
+          No Collection. Add new collection
+        </div>
+      )}
       <div className=" grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mt-10 ">
-        {data.collectionsWithCounts.map((c, i) => (
+        {data!.collectionsWithCounts.map((c, i) => (
           <CollectionCard key={i} c={c} />
         ))}
       </div>
@@ -88,7 +80,7 @@ function CollectionSkeleton() {
         <Skeleton className=" h-10 w-40 animate-shimmer bg-gray-200" />
         <Skeleton className=" h-10 w-60 animate-shimmer bg-gray-200" />
       </div>
-      <div className=" grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mt-15">
+      <div className=" grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mt-10">
         {[...Array(10)].map((i, k) => (
           <div key={k}>
             <Skeleton className=" container aspect-square  animate-shimmer bg-gray-200" />
@@ -104,6 +96,7 @@ function CollectionCard({ c }: { c: CollectionsWithCount }) {
   const { mutate: deleteCollection } = useDeleteCollection()
   const [open, setOpen] = useState(false)
   const [editOpen, setEditOpen] = useState(false)
+  const [alertDialogOpen, setAlertDialogOpen] = useState(false)
 
   const [collectionName, setCollectionName] = useState('')
 
@@ -128,6 +121,7 @@ function CollectionCard({ c }: { c: CollectionsWithCount }) {
       {
         onSuccess: () => {
           setOpen(false)
+          setEditOpen(false)
         },
       }
     )
@@ -201,34 +195,32 @@ function CollectionCard({ c }: { c: CollectionsWithCount }) {
                   <PenBox /> Edit
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  onClick={(e) => {
-                    e.preventDefault()
-                  }}
+                  onClick={() => setAlertDialogOpen(true)}
                   className=" text-red-600 "
                 >
                   <Trash2 className=" text-red-600" />
-                  <AlertDialog>
-                    <AlertDialogTrigger>Delete</AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Are you sure ?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          This action cannot be undone, This will permanently delete the collection
-                          and it's content
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={handleDelete}>Continue</AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                  Delete
                 </DropdownMenuItem>
               </DropdownMenuGroup>
             )}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+      <AlertDialog open={alertDialogOpen} onOpenChange={setAlertDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure ?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone, This will permanently delete the collection and
+              it&apos;s content
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete}>Continue</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

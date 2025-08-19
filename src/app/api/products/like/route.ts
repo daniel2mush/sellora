@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
       message: 'Please provide a product Id',
     })
 
-  const data = await LikeProductAction(product.productId)
+  await LikeProductAction(product.productId)
 
   return NextResponse.json({
     status: true,

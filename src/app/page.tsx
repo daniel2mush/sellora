@@ -1,7 +1,6 @@
 import { CreateAnAccount } from '@/components/appCompnent/userComponent/homeComponent/account'
 import { AccordionSection } from '@/components/appCompnent/userComponent/homeComponent/acodion'
 import ContentType from '@/components/appCompnent/userComponent/homeComponent/content-type'
-import Footer from '@/components/appCompnent/userComponent/homeComponent/footer'
 import HeroSection from '@/components/appCompnent/userComponent/homeComponent/hero'
 import JoinToday from '@/components/appCompnent/userComponent/homeComponent/join'
 import Trending from '@/components/appCompnent/userComponent/homeComponent/trending'

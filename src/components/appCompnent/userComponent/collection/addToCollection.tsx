@@ -17,7 +17,7 @@ export default function AddToCollection({ productId }: { productId: string }) {
   const [collection, setCollection] = useState('')
   const { data: allCollection, isLoading } = useGetAllCollection()
   const { mutate, isPending: isCreating } = useCreateCollection()
-  const { mutate: AddProductToCollection, isPaused: isAdding } = useAddProductToCollection()
+  const { mutate: AddProductToCollection } = useAddProductToCollection()
   const [collectionIndex, setCollectionIndex] = useState<number[]>([])
 
   const { data: checker } = useCollectionChecker(productId)

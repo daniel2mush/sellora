@@ -1,8 +1,7 @@
 'use client'
 
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Label } from '@/components/ui/label'
-import { Settings2, Camera, FileImage, Layers, Globe, Star, SlidersHorizontal } from 'lucide-react'
+import { Settings2, Globe, Star, SlidersHorizontal } from 'lucide-react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useMediaQuery } from 'react-responsive'
 

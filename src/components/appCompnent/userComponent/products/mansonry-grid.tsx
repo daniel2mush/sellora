@@ -3,13 +3,11 @@
 import { Masonry } from 'masonic'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Badge } from '@/components/ui/badge'
 import { productWithUser } from '@/lib/types/productTypes'
-import { Download, Shapes, Heart } from 'lucide-react' // Added Heart for like button
+import { Shapes, Heart } from 'lucide-react' // Added Heart for like button
 import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip' // Added for tooltips
-import { useState } from 'react'
-import { uselikeMutation, useLikeProduct, useUnLikeMutation } from '@/lib/utils/queryFuntions'
+import { useLikeMutation, useLikeProduct, useUnLikeMutation } from '@/lib/utils/queryFuntions'
 import {
   Dialog,
   DialogContent,
@@ -49,7 +47,7 @@ export default function MasonryGrid({
 }
 
 function ProductCard({ data }: { data: productWithUser }) {
-  const { mutate: Like } = uselikeMutation()
+  const { mutate: Like } = useLikeMutation()
   const { mutate: UnLike } = useUnLikeMutation()
   const { data: LikedProductsData, isLoading } = useLikeProduct()
 

@@ -1,9 +1,8 @@
 'use client'
-import { productTypes, productWithAsset } from '@/lib/types/productTypes'
+import { productWithAsset } from '@/lib/types/productTypes'
 import { Masonry } from 'masonic'
 import Image from 'next/image'
 import Link from 'next/link'
-import { format } from 'date-fns'
 
 export default function UserMansory({
   product,
@@ -36,10 +35,8 @@ export default function UserMansory({
 }
 
 function ProductCard({ product }: { product: productWithAsset }) {
-  const { id, title, thumbnailUrl, price, createdAt, isPublished } = product.products
+  const { id, title, thumbnailUrl, price } = product.products
 
-  const formattedDate = createdAt ? format(new Date(createdAt), 'MMM dd, yyyy') : 'Unknown date'
-  const status = isPublished ? 'Published' : 'Draft'
   const licenseIcon =
     price > 0
       ? 'https://res.cloudinary.com/dybyeiofb/image/upload/v1755276954/license_nmcngm.png'

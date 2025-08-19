@@ -1,13 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import axios from 'axios'
 import { productWithUser } from '../types/productTypes'
-import {
-  collection,
-  collectionCProps,
-  collectionItemTypes,
-  Collections,
-  CollectionsWithCount,
-} from '../types/collectionTypes'
+import { collection, collectionCProps, collectionItemTypes } from '../types/collectionTypes'
 
 export async function fetchAllProducts(searchParams: string) {
   try {
@@ -47,13 +41,11 @@ export function useLikeProduct() {
   })
 }
 
-export function uselikeMutation() {
+export function useLikeMutation() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: async (productId: string) => {
       const res = await axios.post('/api/products/like', { productId })
-
-      console.log(res.data, 'Like results')
 
       return res.data
     },
@@ -68,8 +60,6 @@ export function useUnLikeMutation() {
   return useMutation({
     mutationFn: async (productId: string) => {
       const res = await axios.post('/api/products/unlike', { productId })
-
-      console.log(res.data, 'Unlike results')
 
       return res.data
     },
@@ -151,8 +141,6 @@ export function useGetCollectionWithProducts(collectionId?: string) {
       const apiroute2 = `/api/collection/product/${collectionId}`
       const res = await axios.get(collectionId ? apiroute2 : apiroute1)
 
-      console.log(res.data, 'Collection fun')
-
       return res.data as collectionCProps
     },
   })
@@ -173,8 +161,6 @@ export function useEditCollection() {
     }) => {
       const res = await axios.post(`/api/collection/${collectionId}`, { collectionName })
 
-      console.log(res.data, 'Update results')
-
       return res.data
     },
 
@@ -194,7 +180,32 @@ export function useDeleteCollection() {
     mutationFn: async ({ collectionId }: { collectionId: string }) => {
       const res = await axios.delete(`/api/collection/${collectionId}`)
 
-      console.log(res.data, 'Delete results')
+      return res.data
+    },
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['collections'] })
+      queryClient.invalidateQueries({ queryKey: ['collectionsWithProducts'] })
+    },
+  })
+}
+
+//Remove from Collection
+
+export function useRemoveFromCollection() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async ({
+      collectionId,
+      productId,
+    }: {
+      collectionId: string
+      productId: string
+    }) => {
+      const res = await axios.delete(
+        `/api/collection/product/${collectionId}?productId=${productId}`
+      )
 
       return res.data
     },

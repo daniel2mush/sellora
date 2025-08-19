@@ -29,6 +29,7 @@ export interface productCollectionsType {
   name: string
   productId: string
   thumbnail: string
+  price: number
 }
 // export interface CollectionTypes {
 //   collections: Collections[]

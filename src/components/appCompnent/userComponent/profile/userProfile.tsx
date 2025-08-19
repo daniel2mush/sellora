@@ -1,5 +1,5 @@
 'use client'
-import { notFound, useParams, useRouter, useSearchParams } from 'next/navigation'
+import { notFound, useParams, useSearchParams } from 'next/navigation'
 import { useUserInfo } from './userQuery'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
@@ -10,14 +10,21 @@ import UserMansory from './mansoryUser'
 import { searchQueryProps } from '@/app/actions/userActions/ProductActionsUser'
 import { productWithAsset } from '@/lib/types/productTypes'
 import UserProfileSkeleton from './userProfileSkeleton'
+import { useGetAdminFollowers, useIsFollowing } from '@/lib/utils/followQuery/followQuery'
+import { useSession } from '@/lib/authClient'
+import UnFollowButton from '../follow/UnfollowButton'
+import FollowButton from '../follow/FollowButton'
 
 export default function UserProfilePage() {
   const params = useParams() as { id: string }
   const searchParams = useSearchParams()
   const content = searchParams.get('content')
   const license = searchParams.get('license')
+  const session = useSession()
 
   const { data, isLoading } = useUserInfo(params.id, content as searchQueryProps)
+  const { data: isFollowing } = useIsFollowing(data ? data.userInfo.id : '')
+  const { data: adminFollowers } = useGetAdminFollowers(data ? data.userInfo.id : '')
 
   if (isLoading) return <UserProfileSkeleton />
 
@@ -32,6 +39,8 @@ export default function UserProfilePage() {
   } else if (license === 'prolicense') {
     productCopy = productCopy.filter((p) => p.products.price > 0)
   }
+
+  const followers = adminFollowers?.length
 
   return (
     <div className=" max-w-7xl mx-auto pt-10 px-10">
@@ -48,15 +57,19 @@ export default function UserProfilePage() {
         <div className=" flex justify-center items-center flex-col md:items-start ">
           <h1 className=" font-bold text-2xl">{userInfo.name}</h1>
           {/* Buttons */}
-          <div className=" space-x-2">
-            <Button className=" px-15">Follow</Button>
+          <div className=" space-x-2 mt-3">
+            {session && isFollowing ? (
+              <UnFollowButton adminId={data.userInfo.id} />
+            ) : (
+              <FollowButton adminId={data.userInfo.id} />
+            )}
             <Button variant={'ghost'}>
               <Share2 />
             </Button>
           </div>
           {/* Info */}
           <div className=" flex items-center justify-between gap-3 mt-3">
-            <h2 className=" text-sm font-bold text-gray-600">4 follower</h2>
+            <h2 className=" text-sm font-bold text-gray-600">{followers} followers</h2>
             <div className=" border-r-2 h-[100%] border-gray-600 " />
             <h2 className=" text-sm font-bold text-gray-600">36k downloads</h2>
           </div>

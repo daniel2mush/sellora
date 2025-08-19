@@ -76,27 +76,33 @@ export default function MobileNavigation() {
             <SheetHeader className="mb-6">
               <DialogTitle className="sr-only">Main navigation menu</DialogTitle>
               <div className="relative w-32 h-10">
-                <Image
-                  src="https://res.cloudinary.com/dybyeiofb/image/upload/v1755276942/Logo_bbchps.png"
-                  alt="Logo"
-                  fill
-                  className="object-contain"
-                  priority
-                />
+                <Image src="/Logo.png" alt="Logo" fill className="object-contain" priority />
               </div>
             </SheetHeader>
             <nav className="flex flex-col space-y-2">
-              {navMenu.map((item) => (
-                <SheetClose key={item.path} asChild>
+              {session ? (
+                <SheetClose asChild>
                   <Link
-                    href={item.path}
+                    href={navMenu[1].path}
                     className="flex items-center gap-3 px-4 py-3 text-sm font-medium hover:bg-accent rounded-md transition-colors"
                   >
-                    {item.icon}
-                    {item.name}
+                    {navMenu[1].icon}
+                    {navMenu[1].name}
                   </Link>
                 </SheetClose>
-              ))}
+              ) : (
+                navMenu.map((item) => (
+                  <SheetClose key={item.path} asChild>
+                    <Link
+                      href={item.path}
+                      className="flex items-center gap-3 px-4 py-3 text-sm font-medium hover:bg-accent rounded-md transition-colors"
+                    >
+                      {item.icon}
+                      {item.name}
+                    </Link>
+                  </SheetClose>
+                ))
+              )}
               {session?.user && (
                 <>
                   <div className="my-4 border-t border-border" />
@@ -118,13 +124,7 @@ export default function MobileNavigation() {
         </Sheet>
 
         <Link href="/" className="relative w-28 h-8">
-          <Image
-            src="https://res.cloudinary.com/dybyeiofb/image/upload/v1755276942/Logo_bbchps.png"
-            alt="Logo"
-            fill
-            className="object-contain"
-            priority
-          />
+          <Image src="/Logo.png" alt="Logo" fill className="object-contain" priority />
         </Link>
 
         <UserMenu />

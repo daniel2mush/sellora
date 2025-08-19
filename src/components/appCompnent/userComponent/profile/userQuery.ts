@@ -2,7 +2,6 @@ import { searchQueryProps } from '@/app/actions/userActions/ProductActionsUser'
 import { userProfileTypes } from '@/lib/types/productTypes'
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
-import { useId } from 'react'
 
 export function useUserInfo(userId: string, content: searchQueryProps) {
   return useQuery({

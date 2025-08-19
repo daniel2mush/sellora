@@ -6,12 +6,12 @@ import {
   GetUserUploadsAction,
   IsAlreadyBougth,
 } from '@/app/actions/userActions/ProductActionsUser'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+
+import ProfileSection from '@/components/appCompnent/userComponent/products/productDetails/profileSection'
 import { Button } from '@/components/ui/button'
 import { auth } from '@/lib/auth'
 import { productWithUser } from '@/lib/types/productTypes'
-import { AvatarImage } from '@radix-ui/react-avatar'
-import { CircleAlert, Download, FileText, Shapes, Share, UserPlus } from 'lucide-react'
+import { CircleAlert, Download, FileText, Shapes, Share } from 'lucide-react'
 import { Metadata } from 'next'
 import { headers } from 'next/headers'
 import Image from 'next/image'
@@ -48,7 +48,7 @@ export default async function ProductDetails({
     headers: await headers(),
   })
 
-  const isLoggedIn = session?.user
+  const isLoggedIn = session?.user ? true : false
   const isFree = product.products.price <= 0
 
   const isAuthor = product.products.userId === session?.user.id
@@ -115,24 +115,7 @@ export default async function ProductDetails({
           {/* Sidebar Section */}
           <div className="lg:sticky lg:top-20 self-start bg-white rounded-2xl shadow-lg p-6 space-y-6">
             {/* Author Profile */}
-            <Link href={`/profile/${product.user.id}?content=all`}>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <Avatar className="w-12 h-12 ring-2 ring-gray-200">
-                    <AvatarImage src={product.user.image as string} alt={product.user.name} />
-                    <AvatarFallback>{product.user.name.charAt(0)}</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <h2 className="font-semibold text-lg text-gray-900">{product.user.name}</h2>
-                    <p className="text-sm text-gray-500">{count} Resources</p>
-                  </div>
-                </div>
-                <Button variant="ghost" className="hover:bg-gray-100 transition-colors">
-                  <UserPlus size={20} className="mr-2" />
-                  Follow
-                </Button>
-              </div>
-            </Link>
+            <ProfileSection product={product} isLoggedIn={isLoggedIn} count={count} />
 
             {/* Action Buttons */}
             <div className="space-y-4 mt-10">

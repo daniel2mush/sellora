@@ -3,7 +3,7 @@
 import { auth } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { collectionItems, collections, products } from '@/lib/db/schema'
-import { and, count, eq, or, sql } from 'drizzle-orm'
+import { and, eq, sql } from 'drizzle-orm'
 import { headers } from 'next/headers'
 
 export async function AddProductToCollection({
@@ -139,7 +139,6 @@ export async function GetAllUserCollectionWithProductCount(collectionId?: string
   }
 
   try {
-    // ✅ Build condition dynamically
     const conditions = [eq(collections.userId, session.user.id)]
     if (collectionId) {
       conditions.push(eq(collections.id, collectionId))
@@ -160,7 +159,15 @@ export async function GetAllUserCollectionWithProductCount(collectionId?: string
       .orderBy(sql`count(${products.id}) DESC`)
 
     // 2. Get products for a specific collection (only if collectionId is provided)
-    let productsInCollection: any[] = []
+
+    interface productsInCollectionType {
+      productId: string
+      thumbnail: string | null
+      name: string
+      price: number
+    }
+
+    let productsInCollection: productsInCollectionType[] = []
     if (collectionId) {
       productsInCollection = await db
         .select({
@@ -174,8 +181,6 @@ export async function GetAllUserCollectionWithProductCount(collectionId?: string
         .where(eq(collectionItems.collectionId, collectionId)) // ✅ filter by param
     }
 
-    // console.log(collectionsWithCounts)
-    console.log(collectionsWithCounts)
     return {
       collectionsWithCounts,
       productsInCollection,
@@ -299,6 +304,63 @@ export async function DeleteCollectionAction({ collectionId }: { collectionId: s
     return {
       status: false,
       message: 'Error occured while deleting collection',
+    }
+  }
+}
+
+export async function RemoveFromCollection({
+  productId,
+  collectionId,
+}: {
+  productId: string
+  collectionId: string
+}) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  })
+
+  if (!session) {
+    return {
+      status: false,
+      message: 'You are not authorized, please login to continue',
+    }
+  }
+
+  try {
+    // Checking if the user is authorized to edit the collection
+
+    const [isAuthorized] = await db
+      .select()
+      .from(collections)
+      .where(eq(collections.id, collectionId))
+
+    // check if there is a collection
+    if (!isAuthorized)
+      return {
+        status: false,
+        message: 'There is no collection with this id',
+      }
+
+    if (isAuthorized.userId !== session.user.id) {
+      return {
+        status: false,
+        message: 'You are not authorized to remove  this product.',
+      }
+    }
+
+    // remove the product from the collection;
+
+    await db.delete(collectionItems).where(eq(collectionItems.productId, productId))
+
+    return {
+      status: true,
+      message: 'Product removed from collection',
+    }
+  } catch (e) {
+    console.log(e)
+    return {
+      status: false,
+      message: 'Error occured while removing product collection',
     }
   }
 }

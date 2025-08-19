@@ -2,19 +2,10 @@ import { GetTrendingImagesAction } from '@/app/actions/userActions/ProductAction
 import Image from 'next/image'
 import Link from 'next/link'
 
-const images = Array.from({ length: 8 }, (_, i) => ({
-  id: i,
-  src: `/Mansonry/Mansonry${i + 1}.jpg`,
-}))
-
 interface trendingProps {
   product_id: string
   title: string
   thumbnail_url: string
-}
-
-interface trending {
-  rows: trendingProps[]
 }
 
 export default async function Trending() {
