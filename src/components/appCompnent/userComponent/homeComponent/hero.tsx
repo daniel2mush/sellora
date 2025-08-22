@@ -17,6 +17,7 @@ export default function HeroSection() {
         placeholder="blur"
         blurDataURL="https://res.cloudinary.com/dybyeiofb/image/upload/f_auto/v1755861627/blurBackground_ytk53q.webp"
         className="object-cover object-center w-full h-full bg-white"
+        // onBlur={() => setLoaded(true)}
         onLoad={() => setLoaded(true)}
       />
 
