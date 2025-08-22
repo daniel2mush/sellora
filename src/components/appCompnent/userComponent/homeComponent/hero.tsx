@@ -2,10 +2,8 @@
 
 import { Search } from 'lucide-react'
 import Image from 'next/image'
-import { useState } from 'react'
 
 export default function HeroSection() {
-  const [loaded, setLoaded] = useState(false)
   return (
     <div className="relative h-full min-h-[450px] w-full">
       <Image
