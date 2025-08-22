@@ -19,7 +19,6 @@ import {
 import AddToCollection from '../collection/addToCollection'
 import { DialogClose } from '@radix-ui/react-dialog'
 import { useSession } from '@/lib/authClient'
-import { useRouter } from 'next/navigation'
 
 export default function MasonryGrid({
   products,
@@ -50,7 +49,6 @@ export default function MasonryGrid({
 
 function ProductCard({ data }: { data: productWithUser }) {
   const { data: session } = useSession()
-  const router = useRouter()
   const { mutate: Like } = useLikeMutation()
   const { mutate: UnLike } = useUnLikeMutation()
   const { data: LikedProductsData, isLoading } = useLikeProduct()
