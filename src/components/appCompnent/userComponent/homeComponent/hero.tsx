@@ -6,14 +6,13 @@ export default function HeroSection() {
     <div className="relative h-full min-h-[450px] w-full">
       {/* Optimized background image with blur-up placeholder */}
       <Image
-        src="https://res.cloudinary.com/dybyeiofb/image/upload/v1755278561/Screenshot_2025-08-15_at_17.21.48_hpawx7.png"
+        src="https://res.cloudinary.com/dybyeiofb/image/upload/f_auto/v1755861756/Screenshot_2025-08-15_at_17.21.48_hpawx7_cckmyd.webp"
         alt="Hero background"
         fill
-        priority // Loads immediately (good for hero)
+        priority
         quality={90}
         placeholder="blur"
-        blurDataURL="https://res.cloudinary.com/dybyeiofb/image/upload/w_20,e_blur:200,q_1/v1755278561/Screenshot_2025-08-15_at_17.21.48_hpawx7.png
- " // base64 tiny image
+        blurDataURL="https://res.cloudinary.com/dybyeiofb/image/upload/f_auto/v1755861627/blurBackground_ytk53q.webp"
         className="object-cover object-center"
       />
 
@@ -39,7 +38,7 @@ export default function HeroSection() {
             <div className="bg-black p-3 h-full w-50 text-white flex items-center justify-center">
               <div className="relative w-20 md:w-32 h-16">
                 <Image
-                  src="https://res.cloudinary.com/dybyeiofb/image/upload/v1755276942/Logo_bbchps.png"
+                  src="https://res.cloudinary.com/dybyeiofb/image/upload/f_auto/f_auto/v1755276942/Logo_bbchps.png"
                   alt="logo"
                   fill
                   className="filter invert dark:invert-0 object-contain"

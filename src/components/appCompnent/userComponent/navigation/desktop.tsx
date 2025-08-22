@@ -58,7 +58,7 @@ export default function DesktopNavigation() {
         {/* Logo */}
         <Link href="/" className="relative w-20 md:w-32 h-10">
           <Image
-            src="https://res.cloudinary.com/dybyeiofb/image/upload/v1755276942/Logo_bbchps.png"
+            src="https://res.cloudinary.com/dybyeiofb/image/upload/f_auto/v1755276942/Logo_bbchps.png"
             alt="Logo"
             fill
             className="object-contain"

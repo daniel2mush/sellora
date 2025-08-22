@@ -24,7 +24,9 @@ export function CreateAnAccount() {
       <div className=" opacity-0 md:opacity-100 flex-nowrap absolute top-20 left-40 ">
         <div className=" relative  w-[200px] h-[100px]">
           <Image
-            src={'https://res.cloudinary.com/dybyeiofb/image/upload/v1755276941/dots_nv9s2p.webp'}
+            src={
+              'https://res.cloudinary.com/dybyeiofb/image/upload/f_auto/v1755276941/dots_nv9s2p.webp'
+            }
             alt="spiral"
             fill
             className=" object-contain "
@@ -35,7 +37,9 @@ export function CreateAnAccount() {
       <div className=" opacity-0 lg:opacity-100 flex-nowrap absolute top-20 -left-10 -translate-x-96">
         <div className=" relative  w-[800px] h-[400px]">
           <Image
-            src={'https://res.cloudinary.com/dybyeiofb/image/upload/v1755276941/spiral_pwk3cx.webp'}
+            src={
+              'https://res.cloudinary.com/dybyeiofb/image/upload/f_auto/v1755276941/spiral_pwk3cx.webp'
+            }
             alt="spiral"
             fill
             className=" object-contain "
@@ -46,7 +50,9 @@ export function CreateAnAccount() {
       <div className=" opacity-0 lg:opacity-100 flex-nowrap absolute -top-30 -right-10  rotate-180 translate-x-96">
         <div className=" relative  w-[800px] h-[400px]">
           <Image
-            src={'https://res.cloudinary.com/dybyeiofb/image/upload/v1755276941/spiral_pwk3cx.webp'}
+            src={
+              'https://res.cloudinary.com/dybyeiofb/image/upload/f_auto/v1755276941/spiral_pwk3cx.webp'
+            }
             alt="spiral"
             fill
             className=" object-contain "

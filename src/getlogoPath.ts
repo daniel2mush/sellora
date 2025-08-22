@@ -11,13 +11,13 @@ export async function GetLogoPath(): Promise<string> {
   try {
     const logoPath = path.join(
       process.cwd(),
-      'publichttps://res.cloudinary.com/dybyeiofb/image/upload/v1755276942/Logo_bbchps.png'
+      'publichttps://res.cloudinary.com/dybyeiofb/image/upload/f_auto/v1755276942/Logo_bbchps.png'
     )
 
     // Check if file exists first
     if (!fs.existsSync(logoPath)) {
       console.warn('Logo file not found at:', logoPath)
-      return 'https://res.cloudinary.com/dybyeiofb/image/upload/v1755276942/Logo_bbchps.png' // Fallback to public URL
+      return 'https://res.cloudinary.com/dybyeiofb/image/upload/f_auto/v1755276942/Logo_bbchps.png' // Fallback to public URL
     }
 
     const logoBuffer = fs.readFileSync(logoPath)
@@ -27,6 +27,6 @@ export async function GetLogoPath(): Promise<string> {
     return cachedLogo
   } catch (error) {
     console.error('Error reading logo file:', error)
-    return 'https://res.cloudinary.com/dybyeiofb/image/upload/v1755276942/Logo_bbchps.png' // Fallback
+    return 'https://res.cloudinary.com/dybyeiofb/image/upload/f_auto/v1755276942/Logo_bbchps.png' // Fallback
   }
 }

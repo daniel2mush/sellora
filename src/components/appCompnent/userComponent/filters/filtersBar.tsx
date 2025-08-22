@@ -57,7 +57,7 @@ export function FilterBar() {
           <Select onValueChange={(v) => setFilter('license', v)}>
             <SelectTrigger className="w-full">
               <Image
-                src="https://res.cloudinary.com/dybyeiofb/image/upload/v1755276954/license_nmcngm.png"
+                src="https://res.cloudinary.com/dybyeiofb/image/upload/f_auto/v1755276954/license_nmcngm.png"
                 alt="license icon"
                 width={35}
                 height={35}
@@ -100,7 +100,7 @@ export function FilterBar() {
           <Select onValueChange={(v) => setFilter('license', v)}>
             <SelectTrigger>
               <Image
-                src="https://res.cloudinary.com/dybyeiofb/image/upload/v1755276954/license_nmcngm.png"
+                src="https://res.cloudinary.com/dybyeiofb/image/upload/f_auto/v1755276954/license_nmcngm.png"
                 alt="license icon"
                 width={35}
                 height={35}

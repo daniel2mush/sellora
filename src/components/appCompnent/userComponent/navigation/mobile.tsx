@@ -75,9 +75,15 @@ export default function MobileNavigation() {
           <SheetContent side="left" className="w-64">
             <SheetHeader className="mb-6">
               <DialogTitle className="sr-only">Main navigation menu</DialogTitle>
-              <div className="relative w-32 h-10">
-                <Image src="/Logo.png" alt="Logo" fill className="object-contain" priority />
-              </div>
+              <Link href="/" className="relative w-20 md:w-32 h-10">
+                <Image
+                  src="https://res.cloudinary.com/dybyeiofb/image/upload/f_auto/v1755276942/Logo_bbchps.png"
+                  alt="Logo"
+                  fill
+                  className="object-contain"
+                  priority
+                />
+              </Link>
             </SheetHeader>
             <nav className="flex flex-col space-y-2">
               {session ? (
@@ -123,8 +129,14 @@ export default function MobileNavigation() {
           </SheetContent>
         </Sheet>
 
-        <Link href="/" className="relative w-28 h-8">
-          <Image src="/Logo.png" alt="Logo" fill className="object-contain" priority />
+        <Link href="/" className="relative w-20 md:w-32 h-10">
+          <Image
+            src="https://res.cloudinary.com/dybyeiofb/image/upload/f_auto/v1755276942/Logo_bbchps.png"
+            alt="Logo"
+            fill
+            className="object-contain"
+            priority
+          />
         </Link>
 
         <UserMenu />

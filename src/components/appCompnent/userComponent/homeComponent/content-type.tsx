@@ -3,23 +3,28 @@ import Image from 'next/image'
 export default function ContentType() {
   const gridContent = [
     {
-      image: 'https://res.cloudinary.com/dybyeiofb/image/upload/v1755276940/Content1_ap7ks8.webp',
+      image:
+        'https://res.cloudinary.com/dybyeiofb/image/upload/f_auto/v1755276940/Content1_ap7ks8.webp',
       name: 'PNGs',
     },
     {
-      image: 'https://res.cloudinary.com/dybyeiofb/image/upload/v1755276939/Content2_czua7d.webp',
+      image:
+        'https://res.cloudinary.com/dybyeiofb/image/upload/f_auto/v1755276939/Content2_czua7d.webp',
       name: 'Bundles',
     },
     {
-      image: 'https://res.cloudinary.com/dybyeiofb/image/upload/v1755276939/Content3_ifnmcn.webp',
+      image:
+        'https://res.cloudinary.com/dybyeiofb/image/upload/f_auto/v1755276939/Content3_ifnmcn.webp',
       name: 'Templates',
     },
     {
-      image: 'https://res.cloudinary.com/dybyeiofb/image/upload/v1755276940/Content4_bsnb8z.webp',
+      image:
+        'https://res.cloudinary.com/dybyeiofb/image/upload/f_auto/v1755276940/Content4_bsnb8z.webp',
       name: 'Photos',
     },
     {
-      image: 'https://res.cloudinary.com/dybyeiofb/image/upload/v1755276939/Content5_tu7dqm.webp',
+      image:
+        'https://res.cloudinary.com/dybyeiofb/image/upload/f_auto/v1755276939/Content5_tu7dqm.webp',
       name: 'Vectors',
     },
   ]

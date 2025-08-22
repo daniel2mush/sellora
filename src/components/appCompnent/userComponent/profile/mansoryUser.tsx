@@ -39,7 +39,7 @@ function ProductCard({ product }: { product: productWithAsset }) {
 
   const licenseIcon =
     price > 0
-      ? 'https://res.cloudinary.com/dybyeiofb/image/upload/v1755276954/license_nmcngm.png'
+      ? 'https://res.cloudinary.com/dybyeiofb/image/upload/f_auto/v1755276954/license_nmcngm.png'
       : null
 
   return (

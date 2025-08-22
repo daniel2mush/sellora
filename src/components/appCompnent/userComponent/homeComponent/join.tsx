@@ -17,7 +17,9 @@ export default function JoinToday() {
         {/* Frist div */}
         <div className=" relative aspect-video rounded-2xl overflow-clip">
           <Image
-            src={'https://res.cloudinary.com/dybyeiofb/image/upload/v1755277656/joinUs_s0lczx.jpg'}
+            src={
+              'https://res.cloudinary.com/dybyeiofb/image/upload/f_auto/v1755277656/joinUs_s0lczx.jpg'
+            }
             alt="join-us"
             fill
             className="object-cover"

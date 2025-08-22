@@ -5,6 +5,7 @@ import { db } from '@/lib/db'
 import { collectionItems, collections, products } from '@/lib/db/schema'
 import { and, eq, sql } from 'drizzle-orm'
 import { headers } from 'next/headers'
+import { redirect } from 'next/navigation'
 
 export async function AddProductToCollection({
   productId,
@@ -83,11 +84,7 @@ export async function GetAllUserCollection() {
     headers: await headers(),
   })
 
-  if (!session)
-    return {
-      status: false,
-      message: 'You are not authorized, please login to continue',
-    }
+  if (!session) redirect('/auth')
 
   try {
     const userCollection = await db

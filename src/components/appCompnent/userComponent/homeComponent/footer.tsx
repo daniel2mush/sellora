@@ -9,7 +9,9 @@ export default function Footer() {
         <div>
           <div className="  relative w-20 md:w-32  h-16">
             <Image
-              src={'https://res.cloudinary.com/dybyeiofb/image/upload/v1755276942/Logo_bbchps.png'}
+              src={
+                'https://res.cloudinary.com/dybyeiofb/image/upload/f_auto/v1755276942/Logo_bbchps.png'
+              }
               alt="logo"
               fill
               className=" filter invert dark:invert-0 object-contain"

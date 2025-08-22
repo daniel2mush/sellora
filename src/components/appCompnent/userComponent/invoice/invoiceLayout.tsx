@@ -92,7 +92,7 @@ export default function InvoiceLayout(props: InvoiceLayoutProps) {
     try {
       const logoUrl =
         logoBaseurl ||
-        'https://res.cloudinary.com/dybyeiofb/image/upload/v1755276942/Logo_bbchps.png'
+        'https://res.cloudinary.com/dybyeiofb/image/upload/f_auto/v1755276942/Logo_bbchps.png'
       const logoBytes = await fetch(logoUrl).then((res) => res.arrayBuffer())
       const logoImage = await pdfDoc.embedPng(logoBytes)
       const logoDims = logoImage.scale(0.07) // Adjust scale as needed
@@ -179,7 +179,7 @@ export default function InvoiceLayout(props: InvoiceLayoutProps) {
         <Image
           src={
             logoBaseurl ||
-            'https://res.cloudinary.com/dybyeiofb/image/upload/v1755276942/Logo_bbchps.png'
+            'https://res.cloudinary.com/dybyeiofb/image/upload/f_auto/v1755276942/Logo_bbchps.png'
           }
           alt="logo"
           width={80} // equivalent to w-20
