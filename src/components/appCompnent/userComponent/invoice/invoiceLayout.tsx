@@ -2,7 +2,6 @@
 
 import React from 'react'
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib'
-import { saveAs } from 'file-saver'
 import { InvoiceTypes } from '@/lib/types/productTypes'
 import Image from 'next/image'
 
@@ -149,10 +148,6 @@ export default function InvoiceLayout(props: InvoiceLayoutProps) {
 
     // Footer
     drawText('Thank you for your purchase!', width / 2 - 100, 50, 10)
-
-    const pdfBytes = await pdfDoc.save()
-    const blob = new Blob([pdfBytes], { type: 'application/pdf' })
-    saveAs(blob, `invoice_${invoices.invoiceNumber}.pdf`)
   }
 
   return (
